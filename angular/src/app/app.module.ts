@@ -1,4 +1,4 @@
-import { NgModule, NO_ERRORS_SCHEMA, CUSTOM_ELEMENTS_SCHEMA, APP_INITIALIZER } from '@angular/core';
+import { NgModule, NO_ERRORS_SCHEMA, CUSTOM_ELEMENTS_SCHEMA, LOCALE_ID, APP_INITIALIZER } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
@@ -7,7 +7,7 @@ import { AkitaNgDevtools } from '@datorama/akita-ngdevtools';
 
 // #region Http拦截器
 import { HTTP_INTERCEPTORS, HttpClientModule, HttpClient } from '@angular/common/http';
-import { DefaultInterceptor } from '@core';
+import { DefaultInterceptor, StartupService } from '@core';
 const INTERCEPTOR_PROVIDES = [
   { provide: HTTP_INTERCEPTORS, useClass: DefaultInterceptor, multi: true },
 ];
@@ -31,18 +31,20 @@ export function createTranslateLoader(http: HttpClient) {
 }
 
 /** 配置 angular i18n **/
-import { NZ_I18N, zh_CN } from 'ng-zorro-antd';
+import { NZ_I18N, zh_CN, NZ_DATE_FNS_COMPATIBLE } from 'ng-zorro-antd';
 import { registerLocaleData } from '@angular/common';
 import zh from '@angular/common/locales/zh';
-import { OssService } from 'src/store/oss/oss.service';
-import { OssProxyService } from 'src/api/appService';
-import { OssStore } from 'src/store/oss/oss.store';
 registerLocaleData(zh);
 
+import { NgChatModule } from 'ng-chat';
 
-export function initData(httpClient: HttpClient) {
-  // 假設有個 API 包含了基本的設定
-  return () => httpClient.get('https://jsonplaceholder.typicode.com/todos/').toPromise();
+
+export function startupServiceFactory(
+  startupService: StartupService
+): Function {
+  return () => {
+    startupService.load();
+  };
 }
 
 
@@ -56,6 +58,7 @@ export function initData(httpClient: HttpClient) {
     LayoutModule,
     SharedModule.forRoot(),
     RoutesModule,
+    NgChatModule,
     TranslateModule.forRoot({
       loader: {
         provide: TranslateLoader,
@@ -65,15 +68,20 @@ export function initData(httpClient: HttpClient) {
     }),
     environment.production ? [] : AkitaNgDevtools
   ],
-  providers: [...INTERCEPTOR_PROVIDES,
-  { provide: NZ_I18N, useValue: zh_CN }
-  // ,{
-  //   provide: APP_INITIALIZER,
-  //   useFactory: (ossService: OssService) => (ossStore: OssStore, ossApi: OssProxyService) => ossService.init,
-  //   deps: [OssService],
-  //   multi: true
-  // }
-],
+  providers: [
+    ...INTERCEPTOR_PROVIDES,
+    { provide: LOCALE_ID, useValue: "zh_CN" },
+    { provide: NZ_I18N, useValue: zh_CN },
+    { provide: NZ_DATE_FNS_COMPATIBLE, useValue: true },
+    StartupService,
+    {
+      // Provider for APP_INITIALIZER
+      provide: APP_INITIALIZER,
+      useFactory: startupServiceFactory,
+      deps: [StartupService],
+      multi: true
+    },
+  ],
   bootstrap: [AppComponent],
   schemas: [
     CUSTOM_ELEMENTS_SCHEMA,

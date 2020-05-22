@@ -5,18 +5,23 @@ namespace TT.Abp.Weixin.Domain
 {
     public class WechatUserinfo : CreationAuditedEntity
     {
-        private WechatUserinfo()
+        public override object[] GetKeys()
+        {
+            return new object[] {appid, openid};
+        }
+
+        public WechatUserinfo()
         {
         }
 
-        public WechatUserinfo([NotNull] string appid, [NotNull] string openid, string unionid, string nickname, string headimgurl, WeixinEnums.ClientType fromClient = WeixinEnums.ClientType.Mini)
+        public WechatUserinfo([NotNull] string appid, [NotNull] string openid, string unionid, string nickname, string headimgurl, string appName)
         {
             this.appid = appid;
             this.openid = openid;
             this.unionid = unionid;
             this.nickname = nickname;
             this.headimgurl = headimgurl;
-            FromClient = fromClient;
+            this.AppName = appName;
         }
 
         [NotNull] public string appid { get; set; }
@@ -38,10 +43,7 @@ namespace TT.Abp.Weixin.Domain
 
         public WeixinEnums.ClientType FromClient { get; set; }
 
-        public override object[] GetKeys()
-        {
-            return new object[] {appid, openid};
-        }
+        public string AppName { get; protected set; }
     }
 
     public class WeixinEnums

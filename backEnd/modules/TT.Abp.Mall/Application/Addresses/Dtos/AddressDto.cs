@@ -1,5 +1,6 @@
 ﻿using System;
 using TT.Abp.Mall.Application.Users;
+using TT.Abp.Mall.Domain;
 using TT.Abp.Mall.Domain.Products;
 using Volo.Abp.Application.Dtos;
 
@@ -11,15 +12,11 @@ namespace TT.Abp.Mall.Application.Addresses.Dtos
     public class AddressDto : EntityDto<Guid>
     {
         public string RealName { get; set; }
-
         public string Phone { get; set; }
-
-        public string LocationLable { get; set; }
-
+        
+        public string LocationLabel { get; set; }
         public string LocationAddress { get; set; }
-
         public string NickName { get; set; }
-
         //是否为默认地址
         public bool IsDefault { get; set; } = false;
 
@@ -30,10 +27,8 @@ namespace TT.Abp.Mall.Application.Addresses.Dtos
 
         public double? Lng { get; set; }
 
-        public LocationType LocationType { get; set; }
-
+        public MallEnums.LocationType LocationType { get; set; }
         public Guid? CreatorId { get; set; }
-
         public MallUserDto MallUser { get; set; }
     }
 }

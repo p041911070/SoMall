@@ -1,11 +1,17 @@
 {
     "offsidebar.setting.SETTINGS": "设置",
+    "home": "首页",
+    "mall": "商城",
+    "permissions": "权限",
+    "auditLog": "审计日志",
     "create": "新建",
     "submit": "提交",
     "refresh": "刷新",
+    "add": "新增",
     "edit": "编辑",
     "delete": "删除",
     "upload": "上传",
+    "agree":"同意",
     "add.shop": "添加商户",
     "add.category": "添加分类",
     "delete.warning": "你确定删除吗?",
@@ -161,5 +167,9 @@
     "validation.standard.required": "请输入衡量标准",
     "mall.spu.create": "添加产品",
     "mall.sku.add": "添加商品",
-    "mall.address.add": "添加地址"
+    "mall.address.add": "添加地址",
+    "mall_mini": "商城小程序",
+    "woju_mini": "莴聚小程序",
+    "visitor_mini": "访客小程序",
+    "trip_mini":"旅游小程序"
 }

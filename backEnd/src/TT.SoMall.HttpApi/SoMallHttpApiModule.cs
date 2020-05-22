@@ -1,10 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc.ViewComponents;
-using Microsoft.Extensions.DependencyInjection;
+﻿using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
-using TT.Abp.OssManagement;
-using TT.Abp.Shops;
-using TT.Abp.VisitorManagement;
-using TT.Abp.Weixin;
 using Volo.Abp.Account;
 using Volo.Abp.AspNetCore.Mvc.Conventions;
 using Volo.Abp.FeatureManagement;
@@ -21,10 +16,6 @@ namespace TT.SoMall
         typeof(AbpIdentityHttpApiModule),
         typeof(AbpPermissionManagementHttpApiModule),
         typeof(AbpTenantManagementHttpApiModule),
-        typeof(ShopModule),
-        typeof(OssManagementModule),
-        typeof(VisitorManagementModule),
-        typeof(WeixinModule),
         typeof(AbpFeatureManagementHttpApiModule)
     )]
     public class SoMallHttpApiModule : AbpModule

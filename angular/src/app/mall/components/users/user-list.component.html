@@ -1,0 +1,40 @@
+<nz-page-header nzTitle="用户地址列表">
+    <nz-breadcrumb nz-page-header-breadcrumb>
+        <nz-breadcrumb-item>
+            <a [routerLink]="['/']">首页</a>
+        </nz-breadcrumb-item>
+        <nz-breadcrumb-item>
+            <a [routerLink]="['/mall']">商城</a>
+        </nz-breadcrumb-item>
+    </nz-breadcrumb>
+</nz-page-header>
+
+<nz-card [nzExtra]="extraAction">
+    <ng-template #extraAction>
+        <!-- <button nz-button nzSize="large" class="mr-4" (click)="create()" nzType="primary">{{'mall.address.add' | translate}}</button> -->
+        <button nz-button nzSize="large" (click)="refresh()">{{'refresh' | translate}}</button>
+    </ng-template>
+    <nz-table #dataTable nzShowPagination [nzData]="dataItems">
+        <thead>
+            <tr>
+                <th>name</th>
+                <th>userName</th>
+                <th>phoneNumber</th>
+                <th>phoneNumberConfirmed</th>
+                <th>email</th>
+                <th>emailConfirmed</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr *ngFor="let item of dataTable.data">
+                <!-- <td>{{item.id}}</td> -->
+                <td> {{item.name}} </td>
+                <td> {{item.userName}} </td>
+                <td> {{item.phoneNumber}} </td>
+                <td> {{item.phoneNumberConfirmed}} </td>
+                <td> {{item.email}} </td>
+                <td> {{item.emailConfirmed}} </td>
+            </tr>
+        </tbody>
+    </nz-table>
+</nz-card>

@@ -1,12 +1,18 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using Newtonsoft.Json.Linq;
+using TT.Abp.AppManagement.Application;
+using TT.Abp.Mall.Definitions;
+using TT.Abp.Mall.Domain.Products;
 using TT.Abp.Shops;
 
 namespace TT.Abp.Mall.Application.Products.Dtos
 {
     public class SpuCreateOrUpdateDto
     {
+        public Guid? ShopId { get; set; }
+
         public Guid CategoryId { get; set; }
 
         [Required]
@@ -53,5 +59,9 @@ namespace TT.Abp.Mall.Application.Products.Dtos
         public int? LimitBuyCount { get; set; }
 
         public List<SkuCreateOrUpdateDto> Skus { get; set; } = new List<SkuCreateOrUpdateDto>();
+        
+        public List<AppProductSpu> AppProductSpus { get; set; } = new List<AppProductSpu>();
+        
+        public List<JObject> Apps { get; set; }
     }
 }

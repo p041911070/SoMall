@@ -1,0 +1,18 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>netcoreapp3.1</TargetFramework>
+        <RootNamespace />
+    </PropertyGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\TT.Abp.AppManagement\TT.Abp.AppManagement.csproj" />
+      <ProjectReference Include="..\TT.Abp.Mall\TT.Abp.Mall.csproj" />
+      <ProjectReference Include="..\TT.Abp.Weixin\TT.Abp.Weixin.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <PackageReference Include="Volo.Abp.Http.Client" Version="2.7.0" />
+    </ItemGroup>
+
+</Project>

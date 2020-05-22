@@ -1,17 +1,22 @@
 ﻿using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using Newtonsoft.Json;
+using TT.Abp.Core.EntityFrameworkCore;
+using TT.Abp.Mall.Definitions;
+using TT.Abp.Mall.Domain;
 using TT.Abp.Mall.Domain.Addresses;
 using TT.Abp.Mall.Domain.Comments;
+using TT.Abp.Mall.Domain.News;
 using TT.Abp.Mall.Domain.Orders;
 using TT.Abp.Mall.Domain.Partners;
+using TT.Abp.Mall.Domain.Pays;
 using TT.Abp.Mall.Domain.Products;
+using TT.Abp.Mall.Domain.Shares;
 using TT.Abp.Mall.Domain.Shops;
+using TT.Abp.Mall.Domain.Swipers;
 using TT.Abp.Mall.Domain.Users;
 using Volo.Abp;
 using Volo.Abp.EntityFrameworkCore.Modeling;
-using Volo.Abp.Users;
 
 namespace TT.Abp.Mall.EntityFrameworkCore
 {
@@ -24,7 +29,6 @@ namespace TT.Abp.Mall.EntityFrameworkCore
             builder.Entity<MallUser>(b =>
             {
                 b.ToTable(MallConsts.DbTablePrefix + "Users", MallConsts.DbSchema);
-
                 b.ConfigureAbpUser();
                 b.ConfigureExtraProperties();
             });
@@ -47,8 +51,11 @@ namespace TT.Abp.Mall.EntityFrameworkCore
                 b.Property(x => x.Name).IsRequired().HasMaxLength(MallConsts.MaxNameLength);
                 b.Property(x => x.Code).HasMaxLength(MallConsts.MaxCodeLength);
                 b.Property(x => x.LogoImageUrl).HasMaxLength(MallConsts.MaxImageLength);
+                b.Property(x => x.RedirectUrl).HasMaxLength(MallConsts.MaxImageLength);
 
                 b.HasMany(x => x.SpuList).WithOne(x => x.Category);
+
+                b.HasMany(x => x.AppProductCategories).WithOne(x => x.ProductCategory);
             });
 
             builder.Entity<ProductSpu>(b =>
@@ -66,7 +73,7 @@ namespace TT.Abp.Mall.EntityFrameworkCore
 
                 // Many-To-One
                 b.HasOne(x => x.Category).WithMany(x => x.SpuList).HasForeignKey(x => x.CategoryId)
-                    .OnDelete(DeleteBehavior.Restrict);
+                    .OnDelete(DeleteBehavior.Restrict); //删除限制
             });
 
             builder.Entity<ProductSku>(b =>
@@ -97,9 +104,10 @@ namespace TT.Abp.Mall.EntityFrameworkCore
                 b.ToTable(MallConsts.DbTablePrefix + "PayOrders", MallConsts.DbSchema);
                 b.ConfigureFullAuditedAggregateRoot();
                 b.Property(x => x.Body).IsRequired().HasMaxLength(128);
-                b.Property(x => x.BillNo).HasMaxLength(48);
-                b.Property(x => x.OpenId).HasMaxLength(32);
-                b.Property(x => x.MchId).HasMaxLength(32);
+                b.Property(x => x.BillNo).IsRequired().HasMaxLength(48);
+                b.Property(x => x.OpenId).IsRequired().HasMaxLength(32);
+                b.Property(x => x.MchId).IsRequired().HasMaxLength(32);
+                b.Property(x => x.AppName).IsRequired().HasMaxLength(MallConsts.MaxNameLength);
             });
 
             // 商品订单
@@ -113,7 +121,8 @@ namespace TT.Abp.Mall.EntityFrameworkCore
                 b.Property(x => x.AddressRealName).HasMaxLength(MallConsts.MaxNameLength);
                 b.Property(x => x.AddressNickName).HasMaxLength(MallConsts.MaxNameLength);
                 b.Property(x => x.AddressPhone).HasMaxLength(MallConsts.MaxNameLength);
-                b.Property(x => x.AddressLocationLable).HasMaxLength(MallConsts.MaxOrderComentLength);
+                b.Property(x => x.AddressLocationLabel).HasMaxLength(MallConsts.MaxOrderComentLength);
+                b.Property(x => x.AddressLocationAddress).HasMaxLength(MallConsts.MaxOrderComentLength);
 
                 b.HasMany(x => x.OrderItems).WithOne(x => x.Order);
             });
@@ -126,7 +135,9 @@ namespace TT.Abp.Mall.EntityFrameworkCore
                 b.Property(x => x.SpuName).IsRequired().HasMaxLength(MallConsts.MaxNameLength);
                 b.Property(x => x.SkuName).IsRequired().HasMaxLength(MallConsts.MaxNameLength);
                 b.Property(x => x.SkuPrice).HasColumnType("decimal(18,2)");
+                b.Property(x => x.Discount).HasColumnType("decimal(18,2)");
                 b.Property(x => x.SkuUnit).HasMaxLength(MallConsts.MaxShortNameLength);
+                b.Property(x => x.SkuCoverImageUrl).HasMaxLength(MallConsts.MaxImageLength);
                 b.Property(x => x.Comment).HasMaxLength(MallConsts.MaxOrderComentLength);
 
                 // Many-To-One
@@ -140,7 +151,7 @@ namespace TT.Abp.Mall.EntityFrameworkCore
                 b.ConfigureFullAudited();
                 b.Property(x => x.RealName).IsRequired().HasMaxLength(MallConsts.MaxNameLength);
                 b.Property(x => x.Phone).IsRequired().HasMaxLength(MallConsts.MaxNameLength);
-                b.Property(x => x.LocationLable).IsRequired().HasMaxLength(MallConsts.MaxImageLength);
+                b.Property(x => x.LocationLabel).IsRequired().HasMaxLength(MallConsts.MaxImageLength);
                 b.Property(x => x.LocationAddress).HasMaxLength(MallConsts.MaxImageLength);
                 b.Property(x => x.NickName).HasMaxLength(MallConsts.MaxNameLength);
             });
@@ -159,14 +170,16 @@ namespace TT.Abp.Mall.EntityFrameworkCore
             builder.Entity<Partner>(b =>
             {
                 b.ToTable(MallConsts.DbTablePrefix + "Partners", MallConsts.DbSchema);
+                b.HasKey(x => x.UserId);
+
                 b.ConfigureFullAudited();
                 b.Property(x => x.RealName).IsRequired().HasMaxLength(MallConsts.MaxNameLength);
-                b.Property(x => x.Phone).IsRequired().HasMaxLength(MallConsts.MaxNameLength);
-                b.Property(x => x.Nickname).HasMaxLength(MallConsts.MaxNameLength);
-                b.Property(x => x.HeadImageUrl).HasMaxLength(MallConsts.MaxImageLength);
+                b.Property(x => x.Phone).IsRequired().HasMaxLength(MallConsts.MaxPhoneLength);
+                b.Property(x => x.PhoneBackup).HasMaxLength(MallConsts.MaxPhoneLength);
+                b.Property(x => x.HeadImgUrl).HasMaxLength(MallConsts.MaxImageLength);
 
-                b.Property(x => x.LocationLabel).HasMaxLength(MallConsts.MaxImageLength);
-                b.Property(x => x.LocationAddress).HasMaxLength(MallConsts.MaxImageLength);
+                b.Property(x => x.LocationLabel).HasMaxLength(MallConsts.MaxNameLength);
+                b.Property(x => x.LocationAddress).HasMaxLength(MallConsts.MaxNameLength);
 
                 b.OwnsOne(p => p.Detail,
                     ob => ob.ToTable(MallConsts.DbTablePrefix + "PartnerDetails", MallConsts.DbSchema));
@@ -191,37 +204,141 @@ namespace TT.Abp.Mall.EntityFrameworkCore
             });
 
 
-            // 实名信息
-            builder.Entity<RealNameInfo>(b =>
+            // 优惠券
+            builder.Entity<Coupon>(b =>
             {
-                b.ToTable(MallConsts.DbTablePrefix + "RealNameInfos", MallConsts.DbSchema);
-                b.ConfigureFullAudited();
+                b.ToTable(MallConsts.DbTablePrefix + "Coupons", MallConsts.DbSchema);
+                b.ConfigureFullAuditedAggregateRoot();
 
-                b.Property(x => x.RealName).IsRequired().HasMaxLength(MallConsts.MaxNameLength);
-                b.Property(x => x.Phone).IsRequired().HasMaxLength(MallConsts.MaxNameLength);
-                b.Property(x => x.PhoneBackup).HasMaxLength(MallConsts.MaxNameLength);
-
-                b.Property(x => x.IDCardFrontUrl).IsRequired().HasMaxLength(MallConsts.MaxNameLength);
-                b.Property(x => x.IDCardBackUrl).IsRequired().HasMaxLength(MallConsts.MaxNameLength);
-                b.Property(x => x.IDCardHandUrl).IsRequired().HasMaxLength(MallConsts.MaxNameLength);
-                b.Property(x => x.BusinessLicenseUrl).HasMaxLength(MallConsts.MaxNameLength);
+                b.Property(x => x.Name).IsRequired().HasMaxLength(MallConsts.MaxNameLength);
+                b.Property(x => x.Code).IsRequired().HasMaxLength(MallConsts.MaxCodeLength);
+                b.Property(x => x.Desc).IsRequired().HasMaxLength(MallConsts.MaxShortDescLength);
             });
-        }
-    }
 
-    public static class AbpUsersDbContextModelCreatingExtensions
-    {
-        public static void ConfigureAbpUser<TUser>(this EntityTypeBuilder<TUser> b)
-            where TUser : class, IUser
-        {
-            b.Property(u => u.TenantId).HasColumnName(nameof(IUser.TenantId));
-            b.Property(u => u.UserName).IsRequired().HasMaxLength(AbpUserConsts.MaxUserNameLength).HasColumnName(nameof(IUser.UserName));
-            b.Property(u => u.Email).IsRequired().HasMaxLength(AbpUserConsts.MaxEmailLength).HasColumnName(nameof(IUser.Email));
-            b.Property(u => u.Name).HasMaxLength(AbpUserConsts.MaxNameLength).HasColumnName(nameof(IUser.Name));
-            b.Property(u => u.Surname).HasMaxLength(AbpUserConsts.MaxSurnameLength).HasColumnName(nameof(IUser.Surname));
-            b.Property(u => u.EmailConfirmed).HasDefaultValue(false).HasColumnName(nameof(IUser.EmailConfirmed));
-            b.Property(u => u.PhoneNumber).HasMaxLength(AbpUserConsts.MaxPhoneNumberLength).HasColumnName(nameof(IUser.PhoneNumber));
-            b.Property(u => u.PhoneNumberConfirmed).HasDefaultValue(false).HasColumnName(nameof(IUser.PhoneNumberConfirmed));
+            // 优惠券
+            builder.Entity<UserCoupon>(b =>
+            {
+                b.ToTable(MallConsts.DbTablePrefix + "UserCoupons", MallConsts.DbSchema);
+                b.ConfigureFullAuditedAggregateRoot();
+
+                b.Property(x => x.CouponName).IsRequired().HasMaxLength(MallConsts.MaxNameLength);
+            });
+
+
+            // Pays
+
+            builder.Entity<TenPayNotify>(b =>
+            {
+                b.ToTable(MallConsts.DbTablePrefix + "TenPayNotify", MallConsts.DbSchema);
+                b.ConfigureCreationAuditedAggregateRoot();
+
+                b.Property(x => x.out_trade_no).HasMaxLength(MallConsts.MaxNameLength);
+                b.Property(x => x.result_code).HasMaxLength(MallConsts.MaxNameLength);
+                b.Property(x => x.fee_type).HasMaxLength(MallConsts.MaxNameLength);
+                b.Property(x => x.return_code).HasMaxLength(MallConsts.MaxNameLength);
+                b.Property(x => x.total_fee).HasMaxLength(MallConsts.MaxNameLength);
+                b.Property(x => x.mch_id).HasMaxLength(MallConsts.MaxNameLength);
+                b.Property(x => x.cash_fee).HasMaxLength(MallConsts.MaxNameLength);
+                b.Property(x => x.openid).HasMaxLength(MallConsts.MaxNameLength);
+                b.Property(x => x.transaction_id).HasMaxLength(MallConsts.MaxNameLength);
+                b.Property(x => x.sign).HasMaxLength(MallConsts.MaxNameLength);
+                b.Property(x => x.bank_type).HasMaxLength(MallConsts.MaxNameLength);
+                b.Property(x => x.appid).HasMaxLength(MallConsts.MaxNameLength);
+                b.Property(x => x.time_end).HasMaxLength(MallConsts.MaxNameLength);
+                b.Property(x => x.trade_type).HasMaxLength(MallConsts.MaxNameLength);
+                b.Property(x => x.nonce_str).HasMaxLength(MallConsts.MaxNameLength);
+                b.Property(x => x.is_subscribe).HasMaxLength(MallConsts.MaxNameLength);
+            });
+
+
+            // APPCategory
+
+            builder.Entity<AppProductCategory>(b =>
+            {
+                b.ToTable(MallConsts.DbTablePrefix + "AppProductCategory", MallConsts.DbSchema);
+                b.ConfigureCreationAudited();
+                b.HasKey(x => new {x.AppName, x.ProductCategoryId});
+                b.Property(x => x.AppName).HasMaxLength(MallConsts.MaxNameLength);
+
+                // Many-To-One
+                b.HasOne(x => x.ProductCategory).WithMany(x => x.AppProductCategories).HasForeignKey(x => x.ProductCategoryId)
+                    .OnDelete(DeleteBehavior.Cascade); //级联删除
+            });
+
+            builder.Entity<AppProductSpu>(b =>
+            {
+                b.ToTable(MallConsts.DbTablePrefix + "AppProductSpus", MallConsts.DbSchema);
+                b.ConfigureCreationAudited();
+                b.HasKey(x => new {x.AppName, x.ProductSpuId});
+                b.Property(x => x.AppName).HasMaxLength(MallConsts.MaxNameLength);
+
+                // Many-To-One
+                b.HasOne(x => x.ProductSpu).WithMany(x => x.AppProductSpus).HasForeignKey(x => x.ProductSpuId)
+                    .OnDelete(DeleteBehavior.Cascade); //级联删除
+            });
+
+
+            builder.Entity<Swiper>(b =>
+            {
+                b.ToTable(MallConsts.DbTablePrefix + "Swipers", MallConsts.DbSchema);
+                b.ConfigureFullAuditedAggregateRoot();
+
+                b.Property(x => x.GroupName).IsRequired().HasMaxLength(MallConsts.MaxNameLength);
+                b.Property(x => x.AppName).IsRequired().HasMaxLength(MallConsts.MaxNameLength);
+                b.Property(x => x.CoverImageUrl).IsRequired().HasMaxLength(MallConsts.MaxImageLength);
+                b.Property(x => x.Name).HasMaxLength(MallConsts.MaxNameLength);
+                b.Property(x => x.RedirectUrl).HasMaxLength(MallConsts.MaxImageLength);
+                b.Property(x => x.State).HasDefaultValue(1);
+            });
+
+            builder.Entity<NewsCategory>(b =>
+            {
+                b.ToTable(MallConsts.DbTablePrefix + "NewsCategories", MallConsts.DbSchema);
+                b.ConfigureFullAuditedAggregateRoot();
+                b.Property(x => x.Name).IsRequired().HasMaxLength(MallConsts.MaxNameLength);
+
+                b.HasMany(x => x.Contents).WithOne(x => x.Category);
+            });
+
+            builder.Entity<NewsContent>(b =>
+            {
+                b.ToTable(MallConsts.DbTablePrefix + "NewsContents", MallConsts.DbSchema);
+                b.ConfigureFullAuditedAggregateRoot();
+                b.Property(x => x.Title).IsRequired().HasMaxLength(MallConsts.MaxNameLength);
+                b.Property(x => x.CoverImageUrl).HasMaxLength(MallConsts.MaxImageLength);
+
+                // Many-To-One
+                b.HasOne(x => x.Category).WithMany(x => x.Contents).HasForeignKey(x => x.CategoryId)
+                    .OnDelete(DeleteBehavior.Restrict);
+            });
+
+            builder.Entity<QrDetail>(b =>
+                {
+                    b.ToTable(MallConsts.DbTablePrefix + "QrDetails", MallConsts.DbSchema);
+                    b.ConfigureCreationAudited();
+                    b.Property(x => x.AppName).IsRequired().HasMaxLength(MallConsts.MaxNameLength);
+                    b.Property(x => x.EventName).IsRequired().HasMaxLength(MallConsts.MaxNameLength);
+                    b.Property(x => x.EventKey).HasMaxLength(MallConsts.MaxImageLength);
+                    b.Property(x => x.Path).HasMaxLength(MallConsts.MaxImageLength);
+                    b.Property(x => x.QrImageUrl).HasMaxLength(MallConsts.MaxImageLength);
+
+                    b.Property(x => x.Params).HasConversion(
+                        v => JsonConvert.SerializeObject(v,
+                            new JsonSerializerSettings {NullValueHandling = NullValueHandling.Ignore}),
+                        v => JsonConvert.DeserializeObject<Dictionary<string, string>>(v,
+                            new JsonSerializerSettings {NullValueHandling = NullValueHandling.Ignore}));
+                }
+            );
+            builder.Entity<RefundLog>(b =>
+            {
+                b.ToTable(MallConsts.DbTablePrefix + "RefundLogs", MallConsts.DbSchema);
+                b.ConfigureFullAuditedAggregateRoot();
+
+                b.Property(x => x.BillNo).IsRequired().HasMaxLength(48);
+                b.Property(x => x.Reason).HasMaxLength(MallConsts.MaxShortDescLength);
+                
+                
+            });
         }
     }
 }

@@ -1,16 +1,18 @@
 ﻿using System;
 using System.Threading.Tasks;
-using DotNetCore.CAP;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Caching.Distributed;
 using Newtonsoft.Json;
 using Serilog;
+using TT.Abp.OssManagement;
 using TT.Abp.Shops.Application;
 using TT.Abp.Weixin.Application;
 using TT.Extensions;
 using TT.HttpClient.Weixin;
 using TT.HttpClient.Weixin.Helpers;
+using TT.HttpClient.Weixin.WeixiinResult;
 using TT.Oss;
+using TT.Redis;
 using Volo.Abp;
 using Volo.Abp.Caching;
 using Volo.Abp.DependencyInjection;
@@ -57,7 +59,7 @@ namespace TT.Abp.Weixin.Domain
             if (find == null)
             {
                 await _wechatUserRepository.InsertAsync(
-                    new WechatUserinfo(userinfo.appid, userinfo.openid, userinfo.unionid, userinfo.nickName, userinfo.avatarUrl, WeixinEnums.ClientType.Mini)
+                    new WechatUserinfo(userinfo.appid, userinfo.openid, userinfo.unionid, userinfo.nickName, userinfo.avatarUrl, appName: userinfo.AppName)
                     {
                         city = userinfo.city,
                         province = userinfo.province,
@@ -149,31 +151,34 @@ namespace TT.Abp.Weixin.Domain
             Log.Logger.Error(JsonConvert.SerializeObject(token));
             return null;
         }
-        
-        public virtual async Task<string> Getwxacodeunlimit(string scene, string page = "pages/index/index")
+
+        public virtual async Task<string> Getwxacodeunlimit(string appId, string appSec, string scene, string page = "pages/index/index")
         {
-            var key = "SoMall:QR:Mini";
-            var cache = await _redisClient.HashGetAsync(key, scene);
+            if (page.IsNullOrEmptyOrWhiteSpace())
+            {
+                page = "pages/index/index";
+            }
+
+            var key = $"SoMall:QR:{appId}";
+            var cache = await _redisClient.Database.HashGetAsync(key, scene);
 
             if (cache.HasValue)
             {
                 return cache.ToString();
             }
 
-            var appId = await _setting.GetOrNullAsync(WeixinManagementSetting.MiniAppId);
-            var appSec = await _setting.GetOrNullAsync(WeixinManagementSetting.MiniAppSecret);
-
             var token = await GetAccessTokenAsync(appId, appSec);
 
-            var url = $"https://api.weixin.qq.com/wxa/getwxacodeunlimit?access_token={token}";
-            var img = HttpEx.PostGotImageByte(url, new {scene, page});
+            var img = await _weixinApi.WxacodeGetUnlimit(token, scene, page);
+
             var upyun = await GetUploader();
-            var result = upyun.writeFile($"/somall/mini_qr/{scene}.jpg", img,
-                true);
+
+            var result = upyun.writeFile($"/somall/mini_qr/{scene}.jpg", img, true);
+
             if (result)
             {
                 var path = $"{upyun.Domain}/somall/mini_qr/{scene}.jpg";
-                await _redisClient.HashSetAsync(key, scene,
+                await _redisClient.Database.HashSetAsync(key, scene,
                     path);
                 return path;
             }
@@ -189,25 +194,6 @@ namespace TT.Abp.Weixin.Domain
             var username = await _setting.GetOrNullAsync(OssManagementSettings.AccessId);
             return new UpYun(bucketName, username,
                 pwd, domain);
-        }
-    }
-
-
-    public class WexinCapSubscriberService : ICapSubscribe
-    {
-        private readonly WeixinManager _weixinManager;
-
-        public WexinCapSubscriberService(WeixinManager weixinManager)
-        {
-            _weixinManager = weixinManager;
-        }
-
-        [CapSubscribe("weixin.services.mini.getuserinfo")]
-        public async Task Subscriber(MiniUserInfoResult userInfo)
-        {
-            Log.Logger.Warning("Cap");
-            Log.Logger.Warning(JsonConvert.SerializeObject(userInfo));
-            await _weixinManager.CreateOrUpdate(userInfo);
         }
     }
 }

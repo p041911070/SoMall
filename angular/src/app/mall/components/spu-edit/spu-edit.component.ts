@@ -3,11 +3,12 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { SpuCreateOrUpdateDto, ProductSpuProxyService, SkuCreateOrUpdateDto } from 'src/api/appService';
 import { FormArray, FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { NzMessageService, UploadFile } from 'ng-zorro-antd';
+import { TranslatorService } from '@core/translator/translator.service';
+import { TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-spu-edit',
-  styles: [`
-  `],
+  styleUrls: ["spu-edit.component.scss"],
   templateUrl: './spu-edit.component.html'
 })
 export class SpuEditComponent implements OnInit {
@@ -21,6 +22,7 @@ export class SpuEditComponent implements OnInit {
   form: SpuCreateOrUpdateDto = {
     name: "",
     code: "",
+    shopId: "",
     categoryId: "",
     purchaseNotesCommon: "",
     descCommon: "",
@@ -33,14 +35,20 @@ export class SpuEditComponent implements OnInit {
     private route: ActivatedRoute,
     private router: Router,
     private fb: FormBuilder,
-    private message: NzMessageService
+    private message: NzMessageService,
+    private translate: TranslateService
   ) { }
 
   guid = '00000000-0000-0000-0000-000000000000';
   optionList: any[];
+  shopList: any[];
+  apps: any[] = [];
 
   ngOnInit(): void {
+
+
     this.validateForm = this.fb.group({
+      shopId: null,
       categoryId: null,
       name: [null, [Validators.required, Validators.minLength(2), Validators.maxLength(64)]],
       code: [null, [Validators.required, Validators.minLength(5), Validators.maxLength(32)]],
@@ -57,17 +65,27 @@ export class SpuEditComponent implements OnInit {
         res => {
           this.form = res.data;
           this.optionList = res.schema.categoryId;
+          this.shopList = res.schema.shopId;
           this.form.skus.forEach(item => {
             this.skus = this.validateForm.get('skus') as FormArray;
             this.skus.push(this.createItem(item));
           })
           this.validateForm.setValue({
+            shopId: this.form.shopId,
             categoryId: this.form.categoryId,
             name: this.form.name,
             code: this.form.code,
             purchaseNotesCommon: this.form.purchaseNotesCommon,
             descCommon: this.form.descCommon,
             skus: this.form.skus
+          })
+
+          this.apps = res.schema.apps.map(p => {
+            return {
+              label: this.translate.instant(p.value),
+              value: p.value,
+              checked: res.data.appProductSpus.filter(x => x.appName === p.value).length > 0
+            }
           })
         }
       )
@@ -92,16 +110,19 @@ export class SpuEditComponent implements OnInit {
       "soldCount": [item.soldCount, [Validators.required, Validators.min(0)]],
       "stockCount": item.stockCount,
       "limitBuyCount": item.limitBuyCount,
+      "commissionEnable":item.commissionEnable,
+      "commissionPrice":item.commissionPrice
     });
   }
 
   onSubmit() {
     console.log(this.validateForm.value)
+    console.log(this.spuId)
     if (this.validateForm.valid) {
-      if (this.spuId)
+      if (this.spuId !== this.guid)
         this.api.update({
           id: this.spuId,
-          body: this.validateForm.value
+          body: Object.assign({}, this.validateForm.value, { apps: this.apps })
         }).subscribe(res => {
           if (res.id) { this.router.navigate(['/mall/spus']) }
         })
@@ -130,6 +151,10 @@ export class SpuEditComponent implements OnInit {
     else {
       this.message.warning("至少要保留一个商品信息")
     }
+  }
+
+  updateSingleChecked(event) {
+    console.log(event)
   }
 
 

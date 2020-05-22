@@ -3,7 +3,13 @@
 		{
 			"path": "pages/index/index",
 			"style": {
-				"navigationBarTitleText": "uni-app"
+				"navigationBarTitleText": "SoMall 团长版"
+			}
+		},
+		{
+			"path": "pages/index/login",
+			"style": {
+				"navigationBarTitleText": "登录"
 			}
 		},
 		{
@@ -13,15 +19,15 @@
 			}
 		},
 		{
-			"path": "pages/index/about",
+			"path": "pages/index/cart",
 			"style": {
-				"navigationBarTitleText": "about"
+				"navigationBarTitleText": "购物车"
 			}
 		},
 		{
-			"path": "pages/orders/index",
+			"path": "pages/index/about",
 			"style": {
-				"navigationBarTitleText": "订单"
+				"navigationBarTitleText": "about"
 			}
 		},
 		{
@@ -47,6 +53,42 @@
 			"style": {
 				"navigationBarTitleText": "address"
 			}
+		},
+		{
+			"path": "pages/orders/index",
+			"style": {
+				"navigationBarTitleText": "订单"
+			}
+		},
+		{
+			"path": "pages/orders/pay",
+			"style": {
+				"navigationBarTitleText": "支付页面"
+			}
+		},
+		{
+			"path": "pages/orders/paySuccess",
+			"style": {
+				"navigationBarTitleText": "支付成功"
+			}
+		},
+		{
+			"path": "pages/user/setting",
+			"style": {
+				"navigationBarTitleText": "设置"
+			}
+		},
+		{
+			"path": "pages/user/profile",
+			"style": {
+				"navigationBarTitleText": "个人资料"
+			}
+		},
+		{
+			"path": "pages/partner/edit",
+			"style": {
+				"navigationBarTitleText": "合伙人申请"
+			}
 		}
 	],
 	"globalStyle": {
@@ -71,6 +113,12 @@
 				"iconPath": "static/images/order2.png",
 				"selectedIconPath": "static/images/order.png",
 				"text": "订单"
+			},
+			{
+				"pagePath": "pages/index/cart",
+				"iconPath": "static/images/order2.png",
+				"selectedIconPath": "static/images/order.png",
+				"text": "购物车"
 			},
 			{
 				"pagePath": "pages/index/my",

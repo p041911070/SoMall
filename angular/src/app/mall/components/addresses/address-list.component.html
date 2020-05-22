@@ -11,7 +11,7 @@
 
 <nz-card [nzExtra]="extraAction">
     <ng-template #extraAction>
-        <button nz-button nzSize="large" class="mr-4" (click)="create()" nzType="primary">{{'mall.address.add' | translate}}</button>
+        <!-- <button nz-button nzSize="large" class="mr-4" (click)="create()" nzType="primary">{{'mall.address.add' | translate}}</button> -->
         <button nz-button nzSize="large" (click)="refresh()">{{'refresh' | translate}}</button>
     </ng-template>
     <nz-table #dataTable nzShowPagination [nzData]="dataItems">
@@ -21,9 +21,11 @@
                 <th>Realname</th>
                 <th>phone</th>
                 <th>locationAddress</th>
-                <th>locationLable</th>
+                <th>locationLabel</th>
                 <th>Lat</th>
                 <th>Lng</th>
+                <th>geoType</th>
+                <th>user</th>
                 <!-- <th></th> -->
             </tr>
         </thead>
@@ -32,13 +34,16 @@
                 <!-- <td>{{item.id}}</td> -->
                 <td> {{item.realName}} </td>
                 <td> {{item.phone}} </td>
-                <td>{{item.locationAddress}}</td>
-                <td>{{item.locationLable}}</td>
-                <td>{{item.lat}}</td>
-                <td>{{item.lng}}</td>
-                <!-- <td>
-                    <a (click)="edit(item)">{{'edit' | translate}}</a>
-                </td> -->
+                <td> {{item.locationAddress}} </td>
+                <td> {{item.locationLabel}} </td>
+                <td> {{item.lat}} </td>
+                <td> {{item.lng}} </td>
+                <td> {{item.locationType}} </td>
+                <td>
+                    <span *ngIf="item.mallUser">
+                        {{item.mallUser.name}}
+                    </span>
+                </td>
             </tr>
         </tbody>
     </nz-table>

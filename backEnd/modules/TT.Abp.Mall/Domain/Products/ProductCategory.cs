@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using JetBrains.Annotations;
 using TT.Abp.Shops;
 using TT.Abp.Shops.Domain;
 using Volo.Abp.Domain.Entities.Auditing;
@@ -23,10 +24,28 @@ namespace TT.Abp.Mall.Domain.Products
 
         public virtual string Name { get; protected set; }
         public virtual string Code { get; protected set; }
-
         public virtual string LogoImageUrl { get; set; }
+        [CanBeNull] public virtual string RedirectUrl { get; set; }
         public virtual ICollection<ProductSpu> SpuList { get; set; }
         public virtual Guid? TenantId { get; protected set; }
         public virtual Guid? ShopId { get; protected set; }
+
+        public virtual int Sort { get; set; }
+
+        /// <summary>
+        /// 全部APP显示
+        /// </summary>
+        public virtual bool IsGlobal { get; set; }
+
+        public virtual ICollection<AppProductCategory> AppProductCategories { get; set; }
+    }
+
+
+    public class AppProductCategoryDto
+    {
+        public string AppName { get; set; }
+        public Guid ProductCategoryId { get; set; }
+        public string ProductCategoryName { get; set; }
+        public virtual int Sort { get; set; }
     }
 }

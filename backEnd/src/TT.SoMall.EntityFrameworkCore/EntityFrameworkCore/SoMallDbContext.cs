@@ -54,10 +54,9 @@ namespace TT.SoMall.EntityFrameworkCore
             /* Configure your own tables/entities inside the ConfigureSoMall method */
             
             builder.ConfigureSoMall();
-
-            //builder.ConfigureShop();
             
-            //builder.ConfigureWeixinManagement();
+            builder.ConfigureWeixinManagement();
+            
         }
     }
 }

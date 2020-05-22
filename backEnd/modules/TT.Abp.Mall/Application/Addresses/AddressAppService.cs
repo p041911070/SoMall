@@ -3,14 +3,16 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.EntityFrameworkCore;
 using Volo.Abp.Application.Dtos;
 using Volo.Abp.Application.Services;
 using Volo.Abp.Domain.Repositories;
-using Microsoft.EntityFrameworkCore;
 using TT.Abp.Mall.Application.Addresses.Dtos;
 using TT.Abp.Mall.Application.Users;
+using TT.Abp.Mall.Definitions;
 using TT.Abp.Mall.Domain.Addresses;
 using TT.Abp.Mall.Domain.Users;
+using Volo.Abp.EventBus.Local;
 
 namespace TT.Abp.Mall.Application.Addresses
 {
@@ -29,7 +31,6 @@ namespace TT.Abp.Mall.Application.Addresses
     {
         protected IMallUserLookupService UserLookupService { get; }
 
-
         public AddressAppService(
             IRepository<Address, Guid> repository,
             IMallUserLookupService userLookupService
@@ -37,6 +38,10 @@ namespace TT.Abp.Mall.Application.Addresses
             : base(repository)
         {
             UserLookupService = userLookupService;
+
+            base.CreatePolicyName = MallPermissions.Addresses.Create;
+            base.UpdatePolicyName = MallPermissions.Addresses.Update;
+            base.DeletePolicyName = MallPermissions.Addresses.Delete;
         }
 
         public override async Task<PagedResultDto<AddressDto>> GetListAsync(PagedAndSortedResultRequestDto input)
@@ -78,13 +83,14 @@ namespace TT.Abp.Mall.Application.Addresses
                     }
                 }
             }
-            
+
             return addresslist;
         }
 
         public override async Task<AddressDto> CreateAsync(AddressCreateOrUpdateDto input)
         {
-            await CheckCreatePolicyAsync();
+            // 暂时新建的地址都是自己的,所以不用判断权限
+            // await CheckCreatePolicyAsync();
 
             var entity = MapToEntity(input);
 
@@ -125,9 +131,27 @@ namespace TT.Abp.Mall.Application.Addresses
             }
         }
 
+
+        [Authorize]
+        public async Task SetDefault(Guid id)
+        {
+            var list = await Repository.Where(x => x.CreatorId == CurrentUser.Id).ToListAsync();
+            foreach (var address in list)
+            {
+                if (address.Id != id)
+                {
+                    address.IsDefault = false;
+                }
+
+                address.IsDefault = true;
+            }
+
+            await Task.CompletedTask;
+        }
+
         protected override IQueryable<Address> CreateFilteredQuery(PagedAndSortedResultRequestDto input)
         {
-            return base.CreateFilteredQuery(input).Include(x => x.CreatorId);
+            return base.CreateFilteredQuery(input);
         }
     }
 }

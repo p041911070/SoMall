@@ -6,7 +6,9 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.DataProtection;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Localization;
 using Microsoft.AspNetCore.Mvc.ApiExplorer;
+using Microsoft.AspNetCore.Mvc.Formatters;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
@@ -65,18 +67,18 @@ namespace TT.SoMall
         private void ConfigureVirtualFileSystem(ServiceConfigurationContext context)
         {
             var hostingEnvironment = context.Services.GetHostingEnvironment();
-            
+
             if (hostingEnvironment.IsDevelopment())
             {
                 Configure<AbpVirtualFileSystemOptions>(options =>
                 {
                     options.FileSets.ReplaceEmbeddedByPhysical<SoMallDomainSharedModule>(Path.Combine(hostingEnvironment.ContentRootPath, $"..{Path.DirectorySeparatorChar}TT.SoMall.Domain.Shared"));
-            
+
                     options.FileSets.ReplaceEmbeddedByPhysical<SoMallDomainModule>(Path.Combine(hostingEnvironment.ContentRootPath, $"..{Path.DirectorySeparatorChar}TT.SoMall.Domain"));
-            
+
                     options.FileSets.ReplaceEmbeddedByPhysical<SoMallApplicationContractsModule>(Path.Combine(hostingEnvironment.ContentRootPath,
                         $"..{Path.DirectorySeparatorChar}TT.SoMall.Application.Contracts"));
-            
+
                     options.FileSets.ReplaceEmbeddedByPhysical<SoMallApplicationModule>(Path.Combine(hostingEnvironment.ContentRootPath, $"..{Path.DirectorySeparatorChar}TT.SoMall.Application"));
                 });
             }
@@ -90,9 +92,11 @@ namespace TT.SoMall
                 options.ConventionalControllers.Create(typeof(SoMallApplicationModule).Assembly);
             });
 
-            context.Services.AddControllers().AddNewtonsoftJson(options =>
+            context.Services.AddControllers(
+                opt => { opt.InputFormatters.Add(new XmlSerializerInputFormatter(opt)); }
+            ).AddNewtonsoftJson(options =>
             {
-                options.SerializerSettings.DateFormatString = "yyyy-MM-dd HH:mm:ss";
+                // options.SerializerSettings.DateFormatString = "yyyy-MM-dd HH:mm:ss";
 
                 options.SerializerSettings.Converters.Add(new StringEnumConverter());
 
@@ -149,6 +153,7 @@ namespace TT.SoMall
                 options.AddPolicy(DefaultCorsPolicyName, builder =>
                 {
                     builder
+                        //.AllowAnyOrigin()
                         .WithOrigins(
                             configuration["App:CorsOrigins"]
                                 .Split(",", StringSplitOptions.RemoveEmptyEntries)
@@ -166,20 +171,26 @@ namespace TT.SoMall
 
         public override void OnApplicationInitialization(ApplicationInitializationContext context)
         {
+            
+            
             var app = context.GetApplicationBuilder();
 
             app.UseCorrelationId();
-            app.UseVirtualFiles();
+            //app.UseVirtualFiles();
             app.UseRouting();
             app.UseCors(DefaultCorsPolicyName);
             app.UseAuthentication();
             app.UseAuthorization();
+
             if (MultiTenancyConsts.IsEnabled)
             {
                 app.UseMultiTenancy();
             }
 
-            app.UseAbpRequestLocalization();
+            app.UseAbpRequestLocalization(option =>
+            {
+                option.DefaultRequestCulture = new RequestCulture("zh-Hans");
+            });
 
             app.UseSwagger();
             app.UseSwaggerUI(options => { options.SwaggerEndpoint("/swagger/v1/swagger.json", "SoMall API"); });

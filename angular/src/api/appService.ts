@@ -28,119 +28,6 @@ export class PagedResultDto<T> implements IPagedResult<T> {
 // empty
 
 @Injectable({ providedIn: 'root' })
-export class AbpApiDefinitionProxyService {
-  constructor(private http: HttpClient) {}
-
-  /**
-   *
-   */
-  apiDefinition(
-    params: {
-      /**  */
-      includeTypes?: boolean;
-    } = {} as any
-  ): Observable<ApplicationApiDescriptionModel> {
-    let url = '/api/abp/api-definition';
-    const _copy: any = { ...params };
-    let options: any = {
-      params: new HttpParams({ fromObject: _copy }),
-      method: 'get'
-    };
-    return (this.http.request('get', url, options) as any) as Observable<ApplicationApiDescriptionModel>;
-  }
-}
-
-@Injectable({ providedIn: 'root' })
-export class AbpApplicationConfigurationProxyService {
-  constructor(private http: HttpClient) {}
-
-  /**
-   *
-   */
-  applicationConfiguration(): Observable<ApplicationConfigurationDto> {
-    let url = '/api/abp/application-configuration';
-    let options: any = {
-      method: 'get'
-    };
-    return (this.http.request('get', url, options) as any) as Observable<ApplicationConfigurationDto>;
-  }
-}
-
-@Injectable({ providedIn: 'root' })
-export class AbpApplicationConfigurationScriptProxyService {
-  constructor(private http: HttpClient) {}
-
-  /**
-   *
-   */
-  applicationConfigurationScript(): Observable<any> {
-    let url = '/Abp/ApplicationConfigurationScript';
-    let options: any = {
-      method: 'get'
-    };
-    return (this.http.request('get', url, options) as any) as Observable<any>;
-  }
-}
-
-@Injectable({ providedIn: 'root' })
-export class AbpLanguagesProxyService {
-  constructor(private http: HttpClient) {}
-
-  /**
-   *
-   */
-  switch(
-    params: {
-      /**  */
-      culture?: string;
-      /**  */
-      uiCulture?: string;
-      /**  */
-      returnUrl?: string;
-    } = {} as any
-  ): Observable<any> {
-    let url = '/Abp/Languages/Switch';
-    const _copy: any = { ...params };
-    let options: any = {
-      params: new HttpParams({ fromObject: _copy }),
-      method: 'get'
-    };
-    return (this.http.request('get', url, options) as any) as Observable<any>;
-  }
-}
-
-@Injectable({ providedIn: 'root' })
-export class AbpServiceProxyScriptProxyService {
-  constructor(private http: HttpClient) {}
-
-  /**
-   *
-   */
-  serviceProxyScript(
-    params: {
-      /**  */
-      type?: string;
-      /**  */
-      useCache?: boolean;
-      /**  */
-      modules?: string;
-      /**  */
-      controllers?: string;
-      /**  */
-      actions?: string;
-    } = {} as any
-  ): Observable<any> {
-    let url = '/Abp/ServiceProxyScript';
-    const _copy: any = { ...params };
-    let options: any = {
-      params: new HttpParams({ fromObject: _copy }),
-      method: 'get'
-    };
-    return (this.http.request('get', url, options) as any) as Observable<any>;
-  }
-}
-
-@Injectable({ providedIn: 'root' })
 export class AbpTenantProxyService {
   constructor(private http: HttpClient) {}
 
@@ -177,28 +64,6 @@ export class AbpTenantProxyService {
       method: 'get'
     };
     return (this.http.request('get', url, options) as any) as Observable<FindTenantResultDto>;
-  }
-}
-
-@Injectable({ providedIn: 'root' })
-export class AccountProxyService {
-  constructor(private http: HttpClient) {}
-
-  /**
-   *
-   */
-  register(
-    params: {
-      /** requestBody */
-      body?: RegisterDto;
-    } = {} as any
-  ): Observable<IdentityUserDto> {
-    let url = '/api/account/register';
-    let options: any = {
-      body: params.body,
-      method: 'post'
-    };
-    return (this.http.request('post', url, options) as any) as Observable<IdentityUserDto>;
   }
 }
 
@@ -281,6 +146,21 @@ export class AddressProxyService {
   /**
    *
    */
+  setDefault(
+    params: {
+      /**  */
+      id?: string;
+    } = {} as any
+  ): Observable<any> {
+    let url = '/api/mall/address/setDefault';
+    let options: any = {
+      method: 'post'
+    };
+    return (this.http.request('post', url, options) as any) as Observable<any>;
+  }
+  /**
+   *
+   */
   get(
     params: {
       /**  */
@@ -298,70 +178,72 @@ export class AddressProxyService {
 }
 
 @Injectable({ providedIn: 'root' })
-export class ClientProxyService {
+export class AppProxyService {
   constructor(private http: HttpClient) {}
 
   /**
    *
    */
-  init(): Observable<any> {
-    let url = '/api/mall/client/init';
-    let options: any = {
-      body: params.body,
-      method: 'post'
-    };
-    return (this.http.request('post', url, options) as any) as Observable<any>;
-  }
-  /**
-   *
-   */
-  miniAuth(
-    params: {
-      /** requestBody */
-      body?: WeChatMiniProgramAuthenticateModel;
-    } = {} as any
-  ): Observable<any> {
-    let url = '/api/mall/client/miniAuth';
-    let options: any = {
-      body: params.body,
-      method: 'post'
-    };
-    return (this.http.request('post', url, options) as any) as Observable<any>;
-  }
-  /**
-   *
-   */
-  getUserAddressList(): Observable<AddressDtoListResultDto> {
-    let url = '/api/mall/client/getUserAddressList';
+  getPublishList(): Observable<AppDefinition[]> {
+    let url = '/api/app/app/getPublishList';
     let options: any = {
       method: 'get'
     };
-    return (this.http.request('get', url, options) as any) as Observable<AddressDtoListResultDto>;
+    return (this.http.request('get', url, options) as any) as Observable<AppDefinition[]>;
   }
-}
-
-@Injectable({ providedIn: 'root' })
-export class FeaturesProxyService {
-  constructor(private http: HttpClient) {}
-
   /**
    *
    */
   get(
     params: {
       /**  */
-      providerName?: string;
-      /**  */
-      providerKey?: string;
+      id?: string;
     } = {} as any
-  ): Observable<FeatureListDto> {
-    let url = '/api/abp/features/get';
+  ): Observable<AppDto> {
+    let url = '/api/app/app/get';
     const _copy: any = { ...params };
     let options: any = {
       params: new HttpParams({ fromObject: _copy }),
       method: 'get'
     };
-    return (this.http.request('get', url, options) as any) as Observable<FeatureListDto>;
+    return (this.http.request('get', url, options) as any) as Observable<AppDto>;
+  }
+  /**
+   *
+   */
+  getList(
+    params: {
+      /**  */
+      sorting?: string;
+      /**  */
+      skipCount?: number;
+      /**  */
+      maxResultCount?: number;
+    } = {} as any
+  ): Observable<AppDtoPagedResultDto> {
+    let url = '/api/app/app/getList';
+    const _copy: any = { ...params };
+    let options: any = {
+      params: new HttpParams({ fromObject: _copy }),
+      method: 'get'
+    };
+    return (this.http.request('get', url, options) as any) as Observable<AppDtoPagedResultDto>;
+  }
+  /**
+   *
+   */
+  create(
+    params: {
+      /** requestBody */
+      body?: AppCreateOrUpdateDto;
+    } = {} as any
+  ): Observable<AppDto> {
+    let url = '/api/app/app/create';
+    let options: any = {
+      body: params.body,
+      method: 'post'
+    };
+    return (this.http.request('post', url, options) as any) as Observable<AppDto>;
   }
   /**
    *
@@ -369,20 +251,496 @@ export class FeaturesProxyService {
   update(
     params: {
       /**  */
-      providerName?: string;
-      /**  */
-      providerKey?: string;
+      id?: string;
       /** requestBody */
-      body?: UpdateFeaturesDto;
+      body?: AppCreateOrUpdateDto;
     } = {} as any
-  ): Observable<any> {
-    let url = '/api/abp/features/update';
+  ): Observable<AppDto> {
+    let url = '/api/app/app/update';
     let options: any = {
       params: { id: params.id },
       body: params.body,
       method: 'put'
     };
-    return (this.http.request('put', url, options) as any) as Observable<any>;
+    return (this.http.request('put', url, options) as any) as Observable<AppDto>;
+  }
+  /**
+   *
+   */
+  delete(
+    params: {
+      /**  */
+      id?: string;
+    } = {} as any
+  ): Observable<any> {
+    let url = '/api/app/app/delete';
+    let options: any = {
+      params: { id: params.id },
+      method: 'delete'
+    };
+    return (this.http.request('delete', url, options) as any) as Observable<any>;
+  }
+}
+
+@Injectable({ providedIn: 'root' })
+export class AuditLogProxyService {
+  constructor(private http: HttpClient) {}
+
+  /**
+   *
+   */
+  getAuditLogs(
+    params: {
+      /**  */
+      startDate?: string;
+      /**  */
+      endDate?: string;
+      /**  */
+      userName?: string;
+      /**  */
+      serviceName?: string;
+      /**  */
+      methodName?: string;
+      /**  */
+      browserInfo?: string;
+      /**  */
+      hasException?: boolean;
+      /**  */
+      minExecutionDuration?: number;
+      /**  */
+      maxExecutionDuration?: number;
+      /**  */
+      sorting?: string;
+      /**  */
+      skipCount?: number;
+      /**  */
+      maxResultCount?: number;
+    } = {} as any
+  ): Observable<AuditLogListDtoPagedResultDto> {
+    let url = '/api/app/auditLog/getAuditLogs';
+    const _copy: any = { ...params };
+    let options: any = {
+      params: new HttpParams({ fromObject: _copy }),
+      method: 'get'
+    };
+    return (this.http.request('get', url, options) as any) as Observable<AuditLogListDtoPagedResultDto>;
+  }
+}
+
+@Injectable({ providedIn: 'root' })
+export class CmsCategoryProxyService {
+  constructor(private http: HttpClient) {}
+
+  /**
+   *
+   */
+  create(
+    params: {
+      /** requestBody */
+      body?: CategoryCreateOrUpdate;
+    } = {} as any
+  ): Observable<CategoryDto> {
+    let url = '/api/cms/cmsCategory/create';
+    let options: any = {
+      body: params.body,
+      method: 'post'
+    };
+    return (this.http.request('post', url, options) as any) as Observable<CategoryDto>;
+  }
+  /**
+   *
+   */
+  getForEdit(
+    params: {
+      /**  */
+      id?: string;
+    } = {} as any
+  ): Observable<CategoryCreateOrUpdateGetForEditOutput> {
+    let url = '/api/cms/cmsCategory/getForEdit';
+    const _copy: any = { ...params };
+    let options: any = {
+      params: new HttpParams({ fromObject: _copy }),
+      method: 'get'
+    };
+    return (this.http.request('get', url, options) as any) as Observable<CategoryCreateOrUpdateGetForEditOutput>;
+  }
+  /**
+   *
+   */
+  dianZan(
+    params: {
+      /**  */
+      id?: string;
+    } = {} as any
+  ): Observable<any> {
+    let url = '/api/cms/cmsCategory/dianZan';
+    const _copy: any = { ...params };
+    let options: any = {
+      params: new HttpParams({ fromObject: _copy }),
+      method: 'get'
+    };
+    return (this.http.request('get', url, options) as any) as Observable<any>;
+  }
+  /**
+   *
+   */
+  update(
+    params: {
+      /**  */
+      id?: string;
+      /** requestBody */
+      body?: CategoryCreateOrUpdate;
+    } = {} as any
+  ): Observable<CategoryDto> {
+    let url = '/api/cms/cmsCategory/update';
+    let options: any = {
+      params: { id: params.id },
+      body: params.body,
+      method: 'put'
+    };
+    return (this.http.request('put', url, options) as any) as Observable<CategoryDto>;
+  }
+  /**
+   *
+   */
+  get(
+    params: {
+      /**  */
+      id?: string;
+    } = {} as any
+  ): Observable<CategoryDto> {
+    let url = '/api/cms/cmsCategory/get';
+    const _copy: any = { ...params };
+    let options: any = {
+      params: new HttpParams({ fromObject: _copy }),
+      method: 'get'
+    };
+    return (this.http.request('get', url, options) as any) as Observable<CategoryDto>;
+  }
+  /**
+   *
+   */
+  getList(
+    params: {
+      /**  */
+      sorting?: string;
+      /**  */
+      skipCount?: number;
+      /**  */
+      maxResultCount?: number;
+    } = {} as any
+  ): Observable<CategoryDtoPagedResultDto> {
+    let url = '/api/cms/cmsCategory/getList';
+    const _copy: any = { ...params };
+    let options: any = {
+      params: new HttpParams({ fromObject: _copy }),
+      method: 'get'
+    };
+    return (this.http.request('get', url, options) as any) as Observable<CategoryDtoPagedResultDto>;
+  }
+  /**
+   *
+   */
+  delete(
+    params: {
+      /**  */
+      id?: string;
+    } = {} as any
+  ): Observable<any> {
+    let url = '/api/cms/cmsCategory/delete';
+    let options: any = {
+      params: { id: params.id },
+      method: 'delete'
+    };
+    return (this.http.request('delete', url, options) as any) as Observable<any>;
+  }
+}
+
+@Injectable({ providedIn: 'root' })
+export class CommentProxyService {
+  constructor(private http: HttpClient) {}
+
+  /**
+   *
+   */
+  create(
+    params: {
+      /** requestBody */
+      body?: CommentCreateOrUpdateDto;
+    } = {} as any
+  ): Observable<CommentDto> {
+    let url = '/api/mall/comment/create';
+    let options: any = {
+      body: params.body,
+      method: 'post'
+    };
+    return (this.http.request('post', url, options) as any) as Observable<CommentDto>;
+  }
+  /**
+   *
+   */
+  update(
+    params: {
+      /**  */
+      id?: string;
+      /** requestBody */
+      body?: CommentCreateOrUpdateDto;
+    } = {} as any
+  ): Observable<CommentDto> {
+    let url = '/api/mall/comment/update';
+    let options: any = {
+      params: { id: params.id },
+      body: params.body,
+      method: 'put'
+    };
+    return (this.http.request('put', url, options) as any) as Observable<CommentDto>;
+  }
+  /**
+   *
+   */
+  getList(
+    params: {
+      /**  */
+      state?: number;
+      /**  */
+      keywords?: string;
+      /**  */
+      shopId?: string;
+      /**  */
+      spuId?: string;
+      /**  */
+      skuId?: string;
+      /**  */
+      appName?: string;
+      /**  */
+      locationType?: LocationType;
+      /**  */
+      sorting?: string;
+      /**  */
+      skipCount?: number;
+      /**  */
+      maxResultCount?: number;
+    } = {} as any
+  ): Observable<CommentDtoPagedResultDto> {
+    let url = '/api/mall/comment/getList';
+    const _copy: any = { ...params };
+    let options: any = {
+      params: new HttpParams({ fromObject: _copy }),
+      method: 'get'
+    };
+    return (this.http.request('get', url, options) as any) as Observable<CommentDtoPagedResultDto>;
+  }
+  /**
+   *
+   */
+  getPublishList(
+    params: {
+      /**  */
+      state?: number;
+      /**  */
+      keywords?: string;
+      /**  */
+      shopId?: string;
+      /**  */
+      spuId?: string;
+      /**  */
+      skuId?: string;
+      /**  */
+      appName?: string;
+      /**  */
+      locationType?: LocationType;
+      /**  */
+      sorting?: string;
+      /**  */
+      skipCount?: number;
+      /**  */
+      maxResultCount?: number;
+    } = {} as any
+  ): Observable<CommentDtoPagedResultDto> {
+    let url = '/api/mall/comment/getPublishList';
+    const _copy: any = { ...params };
+    let options: any = {
+      params: new HttpParams({ fromObject: _copy }),
+      method: 'get'
+    };
+    return (this.http.request('get', url, options) as any) as Observable<CommentDtoPagedResultDto>;
+  }
+  /**
+   *
+   */
+  get(
+    params: {
+      /**  */
+      id?: string;
+    } = {} as any
+  ): Observable<CommentDto> {
+    let url = '/api/mall/comment/get';
+    const _copy: any = { ...params };
+    let options: any = {
+      params: new HttpParams({ fromObject: _copy }),
+      method: 'get'
+    };
+    return (this.http.request('get', url, options) as any) as Observable<CommentDto>;
+  }
+  /**
+   *
+   */
+  delete(
+    params: {
+      /**  */
+      id?: string;
+    } = {} as any
+  ): Observable<any> {
+    let url = '/api/mall/comment/delete';
+    let options: any = {
+      params: { id: params.id },
+      method: 'delete'
+    };
+    return (this.http.request('delete', url, options) as any) as Observable<any>;
+  }
+}
+
+@Injectable({ providedIn: 'root' })
+export class CouponProxyService {
+  constructor(private http: HttpClient) {}
+
+  /**
+   *
+   */
+  getPublishList(
+    params: {
+      /**  */
+      state?: number;
+      /**  */
+      keywords?: string;
+      /**  */
+      shopId?: string;
+      /**  */
+      spuId?: string;
+      /**  */
+      skuId?: string;
+      /**  */
+      appName?: string;
+      /**  */
+      locationType?: LocationType;
+      /**  */
+      sorting?: string;
+      /**  */
+      skipCount?: number;
+      /**  */
+      maxResultCount?: number;
+    } = {} as any
+  ): Observable<CouponDtoListResultDto> {
+    let url = '/api/mall/coupon/getPublishList';
+    const _copy: any = { ...params };
+    let options: any = {
+      params: new HttpParams({ fromObject: _copy }),
+      method: 'get'
+    };
+    return (this.http.request('get', url, options) as any) as Observable<CouponDtoListResultDto>;
+  }
+  /**
+   *
+   */
+  get(
+    params: {
+      /**  */
+      id?: string;
+    } = {} as any
+  ): Observable<CouponDto> {
+    let url = '/api/mall/coupon/get';
+    const _copy: any = { ...params };
+    let options: any = {
+      params: new HttpParams({ fromObject: _copy }),
+      method: 'get'
+    };
+    return (this.http.request('get', url, options) as any) as Observable<CouponDto>;
+  }
+  /**
+   *
+   */
+  getList(
+    params: {
+      /**  */
+      state?: number;
+      /**  */
+      keywords?: string;
+      /**  */
+      shopId?: string;
+      /**  */
+      spuId?: string;
+      /**  */
+      skuId?: string;
+      /**  */
+      appName?: string;
+      /**  */
+      locationType?: LocationType;
+      /**  */
+      sorting?: string;
+      /**  */
+      skipCount?: number;
+      /**  */
+      maxResultCount?: number;
+    } = {} as any
+  ): Observable<CouponDtoPagedResultDto> {
+    let url = '/api/mall/coupon/getList';
+    const _copy: any = { ...params };
+    let options: any = {
+      params: new HttpParams({ fromObject: _copy }),
+      method: 'get'
+    };
+    return (this.http.request('get', url, options) as any) as Observable<CouponDtoPagedResultDto>;
+  }
+  /**
+   *
+   */
+  create(
+    params: {
+      /** requestBody */
+      body?: CouponCreateOrUpdateDto;
+    } = {} as any
+  ): Observable<CouponDto> {
+    let url = '/api/mall/coupon/create';
+    let options: any = {
+      body: params.body,
+      method: 'post'
+    };
+    return (this.http.request('post', url, options) as any) as Observable<CouponDto>;
+  }
+  /**
+   *
+   */
+  update(
+    params: {
+      /**  */
+      id?: string;
+      /** requestBody */
+      body?: CouponCreateOrUpdateDto;
+    } = {} as any
+  ): Observable<CouponDto> {
+    let url = '/api/mall/coupon/update';
+    let options: any = {
+      params: { id: params.id },
+      body: params.body,
+      method: 'put'
+    };
+    return (this.http.request('put', url, options) as any) as Observable<CouponDto>;
+  }
+  /**
+   *
+   */
+  delete(
+    params: {
+      /**  */
+      id?: string;
+    } = {} as any
+  ): Observable<any> {
+    let url = '/api/mall/coupon/delete';
+    let options: any = {
+      params: { id: params.id },
+      method: 'delete'
+    };
+    return (this.http.request('delete', url, options) as any) as Observable<any>;
   }
 }
 
@@ -570,6 +928,101 @@ export class MallShopProxyService {
 }
 
 @Injectable({ providedIn: 'root' })
+export class MallUserProxyService {
+  constructor(private http: HttpClient) {}
+
+  /**
+   *
+   */
+  get(
+    params: {
+      /**  */
+      id?: string;
+    } = {} as any
+  ): Observable<MallUserDto> {
+    let url = '/api/mall/mallUser/get';
+    const _copy: any = { ...params };
+    let options: any = {
+      params: new HttpParams({ fromObject: _copy }),
+      method: 'get'
+    };
+    return (this.http.request('get', url, options) as any) as Observable<MallUserDto>;
+  }
+  /**
+   *
+   */
+  getList(
+    params: {
+      /**  */
+      sorting?: string;
+      /**  */
+      skipCount?: number;
+      /**  */
+      maxResultCount?: number;
+    } = {} as any
+  ): Observable<MallUserDtoPagedResultDto> {
+    let url = '/api/mall/mallUser/getList';
+    const _copy: any = { ...params };
+    let options: any = {
+      params: new HttpParams({ fromObject: _copy }),
+      method: 'get'
+    };
+    return (this.http.request('get', url, options) as any) as Observable<MallUserDtoPagedResultDto>;
+  }
+  /**
+   *
+   */
+  create(
+    params: {
+      /** requestBody */
+      body?: MallUserDto;
+    } = {} as any
+  ): Observable<MallUserDto> {
+    let url = '/api/mall/mallUser/create';
+    let options: any = {
+      body: params.body,
+      method: 'post'
+    };
+    return (this.http.request('post', url, options) as any) as Observable<MallUserDto>;
+  }
+  /**
+   *
+   */
+  update(
+    params: {
+      /**  */
+      id?: string;
+      /** requestBody */
+      body?: MallUserDto;
+    } = {} as any
+  ): Observable<MallUserDto> {
+    let url = '/api/mall/mallUser/update';
+    let options: any = {
+      params: { id: params.id },
+      body: params.body,
+      method: 'put'
+    };
+    return (this.http.request('put', url, options) as any) as Observable<MallUserDto>;
+  }
+  /**
+   *
+   */
+  delete(
+    params: {
+      /**  */
+      id?: string;
+    } = {} as any
+  ): Observable<any> {
+    let url = '/api/mall/mallUser/delete';
+    let options: any = {
+      params: { id: params.id },
+      method: 'delete'
+    };
+    return (this.http.request('delete', url, options) as any) as Observable<any>;
+  }
+}
+
+@Injectable({ providedIn: 'root' })
 export class OssProxyService {
   constructor(private http: HttpClient) {}
 
@@ -606,15 +1059,14 @@ export class OssProxyService {
   test(): Observable<any> {
     let url = '/api/app/oss/test';
     let options: any = {
-      body: params.body,
-      method: 'post'
+      method: 'get'
     };
-    return (this.http.request('post', url, options) as any) as Observable<any>;
+    return (this.http.request('get', url, options) as any) as Observable<any>;
   }
 }
 
 @Injectable({ providedIn: 'root' })
-export class PermissionsProxyService {
+export class PartnerProxyService {
   constructor(private http: HttpClient) {}
 
   /**
@@ -623,39 +1075,192 @@ export class PermissionsProxyService {
   get(
     params: {
       /**  */
-      providerName?: string;
-      /**  */
-      providerKey?: string;
+      userId: string;
     } = {} as any
-  ): Observable<GetPermissionListResultDto> {
-    let url = '/api/abp/permissions/get';
+  ): Observable<PartnerDto> {
+    let url = '/api/mall/partner/get/';
     const _copy: any = { ...params };
     let options: any = {
       params: new HttpParams({ fromObject: _copy }),
       method: 'get'
     };
-    return (this.http.request('get', url, options) as any) as Observable<GetPermissionListResultDto>;
+    return (this.http.request('get', url, options) as any) as Observable<PartnerDto>;
   }
   /**
    *
    */
-  update(
+  getList(
     params: {
       /**  */
-      providerName?: string;
+      state?: number;
       /**  */
-      providerKey?: string;
+      keywords?: string;
+      /**  */
+      shopId?: string;
+      /**  */
+      spuId?: string;
+      /**  */
+      skuId?: string;
+      /**  */
+      appName?: string;
+      /**  */
+      locationType?: LocationType;
+      /**  */
+      sorting?: string;
+      /**  */
+      skipCount?: number;
+      /**  */
+      maxResultCount?: number;
+    } = {} as any
+  ): Observable<PartnerDtoPagedResultDto> {
+    let url = '/api/mall/partner/getList';
+    const _copy: any = { ...params };
+    let options: any = {
+      params: new HttpParams({ fromObject: _copy }),
+      method: 'get'
+    };
+    return (this.http.request('get', url, options) as any) as Observable<PartnerDtoPagedResultDto>;
+  }
+  /**
+   *
+   */
+  getCurrent(): Observable<PartnerCreateOrUpdateDto> {
+    let url = '/api/mall/partner/getCurrent';
+    let options: any = {
+      method: 'get'
+    };
+    return (this.http.request('get', url, options) as any) as Observable<PartnerCreateOrUpdateDto>;
+  }
+  /**
+   *
+   */
+  publicEdit(
+    params: {
       /** requestBody */
-      body?: UpdatePermissionsDto;
+      body?: PartnerCreateOrUpdateDto;
     } = {} as any
   ): Observable<any> {
-    let url = '/api/abp/permissions/update';
+    let url = '/api/mall/partner/publicEdit';
     let options: any = {
-      params: { id: params.id },
       body: params.body,
-      method: 'put'
+      method: 'post'
     };
-    return (this.http.request('put', url, options) as any) as Observable<any>;
+    return (this.http.request('post', url, options) as any) as Observable<any>;
+  }
+}
+
+@Injectable({ providedIn: 'root' })
+export class PayOrderProxyService {
+  constructor(private http: HttpClient) {}
+
+  /**
+   *
+   */
+  get(
+    params: {
+      /**  */
+      id?: string;
+      /**  */
+      billNo?: string;
+      /**  */
+      state?: number;
+      /**  */
+      keywords?: string;
+      /**  */
+      shopId?: string;
+      /**  */
+      spuId?: string;
+      /**  */
+      skuId?: string;
+      /**  */
+      appName?: string;
+      /**  */
+      locationType?: LocationType;
+      /**  */
+      sorting?: string;
+      /**  */
+      skipCount?: number;
+      /**  */
+      maxResultCount?: number;
+    } = {} as any
+  ): Observable<PayOrderDto> {
+    let url = '/api/mall/payOrder/get';
+    const _copy: any = { ...params };
+    let options: any = {
+      params: new HttpParams({ fromObject: _copy }),
+      method: 'get'
+    };
+    return (this.http.request('get', url, options) as any) as Observable<PayOrderDto>;
+  }
+  /**
+   *
+   */
+  getList(
+    params: {
+      /**  */
+      state?: number;
+      /**  */
+      keywords?: string;
+      /**  */
+      shopId?: string;
+      /**  */
+      spuId?: string;
+      /**  */
+      skuId?: string;
+      /**  */
+      appName?: string;
+      /**  */
+      locationType?: LocationType;
+      /**  */
+      sorting?: string;
+      /**  */
+      skipCount?: number;
+      /**  */
+      maxResultCount?: number;
+    } = {} as any
+  ): Observable<PayOrderDtoPagedResultDto> {
+    let url = '/api/mall/payOrder/getList';
+    const _copy: any = { ...params };
+    let options: any = {
+      params: new HttpParams({ fromObject: _copy }),
+      method: 'get'
+    };
+    return (this.http.request('get', url, options) as any) as Observable<PayOrderDtoPagedResultDto>;
+  }
+  /**
+   *
+   */
+  getPublicList(
+    params: {
+      /**  */
+      state?: number;
+      /**  */
+      keywords?: string;
+      /**  */
+      shopId?: string;
+      /**  */
+      spuId?: string;
+      /**  */
+      skuId?: string;
+      /**  */
+      appName?: string;
+      /**  */
+      locationType?: LocationType;
+      /**  */
+      sorting?: string;
+      /**  */
+      skipCount?: number;
+      /**  */
+      maxResultCount?: number;
+    } = {} as any
+  ): Observable<PayOrderDtoPagedResultDto> {
+    let url = '/api/mall/payOrder/getPublicList';
+    const _copy: any = { ...params };
+    let options: any = {
+      params: new HttpParams({ fromObject: _copy }),
+      method: 'get'
+    };
+    return (this.http.request('get', url, options) as any) as Observable<PayOrderDtoPagedResultDto>;
   }
 }
 
@@ -663,6 +1268,42 @@ export class PermissionsProxyService {
 export class ProductCategoryProxyService {
   constructor(private http: HttpClient) {}
 
+  /**
+   *
+   */
+  getForEdit(
+    params: {
+      /**  */
+      id?: string;
+    } = {} as any
+  ): Observable<CategoryCreateOrUpdateDtoGetForEditOutput> {
+    let url = '/api/mall/productCategory/getForEdit';
+    const _copy: any = { ...params };
+    let options: any = {
+      params: new HttpParams({ fromObject: _copy }),
+      method: 'get'
+    };
+    return (this.http.request('get', url, options) as any) as Observable<CategoryCreateOrUpdateDtoGetForEditOutput>;
+  }
+  /**
+   *
+   */
+  update(
+    params: {
+      /**  */
+      id?: string;
+      /** requestBody */
+      body?: CategoryCreateOrUpdateDto;
+    } = {} as any
+  ): Observable<ProductCategoryDto> {
+    let url = '/api/mall/productCategory/update';
+    let options: any = {
+      params: { id: params.id },
+      body: params.body,
+      method: 'put'
+    };
+    return (this.http.request('put', url, options) as any) as Observable<ProductCategoryDto>;
+  }
   /**
    *
    */
@@ -685,6 +1326,20 @@ export class ProductCategoryProxyService {
    */
   getList(
     params: {
+      /**  */
+      state?: number;
+      /**  */
+      keywords?: string;
+      /**  */
+      shopId?: string;
+      /**  */
+      spuId?: string;
+      /**  */
+      skuId?: string;
+      /**  */
+      appName?: string;
+      /**  */
+      locationType?: LocationType;
       /**  */
       sorting?: string;
       /**  */
@@ -720,21 +1375,178 @@ export class ProductCategoryProxyService {
   /**
    *
    */
+  delete(
+    params: {
+      /**  */
+      id?: string;
+    } = {} as any
+  ): Observable<any> {
+    let url = '/api/mall/productCategory/delete';
+    let options: any = {
+      params: { id: params.id },
+      method: 'delete'
+    };
+    return (this.http.request('delete', url, options) as any) as Observable<any>;
+  }
+}
+
+@Injectable({ providedIn: 'root' })
+export class ProductOrderProxyService {
+  constructor(private http: HttpClient) {}
+
+  /**
+   *
+   */
+  get(
+    params: {
+      /**  */
+      id?: string;
+    } = {} as any
+  ): Observable<ProductOrderDto> {
+    let url = '/api/mall/productOrder/get';
+    const _copy: any = { ...params };
+    let options: any = {
+      params: new HttpParams({ fromObject: _copy }),
+      method: 'get'
+    };
+    return (this.http.request('get', url, options) as any) as Observable<ProductOrderDto>;
+  }
+  /**
+   *
+   */
+  getList(
+    params: {
+      /**  */
+      state?: number;
+      /**  */
+      keywords?: string;
+      /**  */
+      shopId?: string;
+      /**  */
+      spuId?: string;
+      /**  */
+      skuId?: string;
+      /**  */
+      appName?: string;
+      /**  */
+      locationType?: LocationType;
+      /**  */
+      sorting?: string;
+      /**  */
+      skipCount?: number;
+      /**  */
+      maxResultCount?: number;
+    } = {} as any
+  ): Observable<ProductOrderDtoPagedResultDto> {
+    let url = '/api/mall/productOrder/getList';
+    const _copy: any = { ...params };
+    let options: any = {
+      params: new HttpParams({ fromObject: _copy }),
+      method: 'get'
+    };
+    return (this.http.request('get', url, options) as any) as Observable<ProductOrderDtoPagedResultDto>;
+  }
+  /**
+   *
+   */
+  create(
+    params: {
+      /** requestBody */
+      body?: ProductOrderCreateOrUpdateDto;
+    } = {} as any
+  ): Observable<ProductOrderDto> {
+    let url = '/api/mall/productOrder/create';
+    let options: any = {
+      body: params.body,
+      method: 'post'
+    };
+    return (this.http.request('post', url, options) as any) as Observable<ProductOrderDto>;
+  }
+  /**
+   *
+   */
+  pay(
+    params: {
+      /** requestBody */
+      body?: OrderPayRequestDto;
+    } = {} as any
+  ): Observable<any> {
+    let url = '/api/mall/productOrder/pay';
+    let options: any = {
+      body: params.body,
+      method: 'post'
+    };
+    return (this.http.request('post', url, options) as any) as Observable<any>;
+  }
+  /**
+   *
+   */
+  refund(
+    params: {
+      /** requestBody */
+      body?: RefundRequestDto;
+    } = {} as any
+  ): Observable<any> {
+    let url = '/api/mall/productOrder/refund';
+    let options: any = {
+      body: params.body,
+      method: 'post'
+    };
+    return (this.http.request('post', url, options) as any) as Observable<any>;
+  }
+  /**
+   *
+   */
+  getPublicList(
+    params: {
+      /**  */
+      state?: number;
+      /**  */
+      keywords?: string;
+      /**  */
+      shopId?: string;
+      /**  */
+      spuId?: string;
+      /**  */
+      skuId?: string;
+      /**  */
+      appName?: string;
+      /**  */
+      locationType?: LocationType;
+      /**  */
+      sorting?: string;
+      /**  */
+      skipCount?: number;
+      /**  */
+      maxResultCount?: number;
+    } = {} as any
+  ): Observable<ProductOrderDtoPagedResultDto> {
+    let url = '/api/mall/productOrder/getPublicList';
+    const _copy: any = { ...params };
+    let options: any = {
+      params: new HttpParams({ fromObject: _copy }),
+      method: 'get'
+    };
+    return (this.http.request('get', url, options) as any) as Observable<ProductOrderDtoPagedResultDto>;
+  }
+  /**
+   *
+   */
   update(
     params: {
       /**  */
       id?: string;
       /** requestBody */
-      body?: CategoryCreateOrUpdateDto;
+      body?: ProductOrderCreateOrUpdateDto;
     } = {} as any
-  ): Observable<ProductCategoryDto> {
-    let url = '/api/mall/productCategory/update';
+  ): Observable<ProductOrderDto> {
+    let url = '/api/mall/productOrder/update';
     let options: any = {
       params: { id: params.id },
       body: params.body,
       method: 'put'
     };
-    return (this.http.request('put', url, options) as any) as Observable<ProductCategoryDto>;
+    return (this.http.request('put', url, options) as any) as Observable<ProductOrderDto>;
   }
   /**
    *
@@ -745,7 +1557,7 @@ export class ProductCategoryProxyService {
       id?: string;
     } = {} as any
   ): Observable<any> {
-    let url = '/api/mall/productCategory/delete';
+    let url = '/api/mall/productOrder/delete';
     let options: any = {
       params: { id: params.id },
       method: 'delete'
@@ -780,6 +1592,20 @@ export class ProductSkuProxyService {
    */
   getList(
     params: {
+      /**  */
+      state?: number;
+      /**  */
+      keywords?: string;
+      /**  */
+      shopId?: string;
+      /**  */
+      spuId?: string;
+      /**  */
+      skuId?: string;
+      /**  */
+      appName?: string;
+      /**  */
+      locationType?: LocationType;
       /**  */
       sorting?: string;
       /**  */
@@ -928,7 +1754,19 @@ export class ProductSpuProxyService {
   getList(
     params: {
       /**  */
+      state?: number;
+      /**  */
+      keywords?: string;
+      /**  */
       shopId?: string;
+      /**  */
+      spuId?: string;
+      /**  */
+      skuId?: string;
+      /**  */
+      appName?: string;
+      /**  */
+      locationType?: LocationType;
       /**  */
       sorting?: string;
       /**  */
@@ -944,6 +1782,22 @@ export class ProductSpuProxyService {
       method: 'get'
     };
     return (this.http.request('get', url, options) as any) as Observable<ProductSpuDtoPagedResultDto>;
+  }
+  /**
+   *
+   */
+  getQr(
+    params: {
+      /** requestBody */
+      body?: MallRequestDto;
+    } = {} as any
+  ): Observable<QrDetail> {
+    let url = '/api/mall/productSpu/getQr';
+    let options: any = {
+      body: params.body,
+      method: 'post'
+    };
+    return (this.http.request('post', url, options) as any) as Observable<QrDetail>;
   }
   /**
    *
@@ -964,51 +1818,187 @@ export class ProductSpuProxyService {
 }
 
 @Injectable({ providedIn: 'root' })
-export class ProfileProxyService {
+export class PublicProxyService {
   constructor(private http: HttpClient) {}
 
   /**
    *
    */
-  myProfile(): Observable<ProfileDto> {
-    let url = '/api/identity/my-profile';
+  getCurrentUser(): Observable<UserProfileInput> {
+    let url = '/api/app/public/getCurrentUser';
     let options: any = {
       method: 'get'
     };
-    return (this.http.request('get', url, options) as any) as Observable<ProfileDto>;
+    return (this.http.request('get', url, options) as any) as Observable<UserProfileInput>;
   }
   /**
    *
    */
-  myProfile1(
+  updateUserProfile(
     params: {
       /** requestBody */
-      body?: UpdateProfileDto;
-    } = {} as any
-  ): Observable<ProfileDto> {
-    let url = '/api/identity/my-profile';
-    let options: any = {
-      params: { id: params.id },
-      body: params.body,
-      method: 'put'
-    };
-    return (this.http.request('put', url, options) as any) as Observable<ProfileDto>;
-  }
-  /**
-   *
-   */
-  changePassword(
-    params: {
-      /** requestBody */
-      body?: ChangePasswordInput;
+      body?: UserProfileInput;
     } = {} as any
   ): Observable<any> {
-    let url = '/api/identity/my-profile/change-password';
+    let url = '/api/app/public/updateUserProfile';
     let options: any = {
       body: params.body,
       method: 'post'
     };
     return (this.http.request('post', url, options) as any) as Observable<any>;
+  }
+}
+
+@Injectable({ providedIn: 'root' })
+export class RealNameInfoProxyService {
+  constructor(private http: HttpClient) {}
+
+  /**
+   *
+   */
+  getList(
+    params: {
+      /**  */
+      sorting?: string;
+      /**  */
+      skipCount?: number;
+      /**  */
+      maxResultCount?: number;
+    } = {} as any
+  ): Observable<RealNameInfoDtoPagedResultDto> {
+    let url = '/api/app/realNameInfo/getList';
+    const _copy: any = { ...params };
+    let options: any = {
+      params: new HttpParams({ fromObject: _copy }),
+      method: 'get'
+    };
+    return (this.http.request('get', url, options) as any) as Observable<RealNameInfoDtoPagedResultDto>;
+  }
+}
+
+@Injectable({ providedIn: 'root' })
+export class RefundLogProxyService {
+  constructor(private http: HttpClient) {}
+
+  /**
+   *
+   */
+  agreeRefund(
+    params: {
+      /**  */
+      id?: string;
+    } = {} as any
+  ): Observable<any> {
+    let url = '/api/mall/refundLog/agreeRefund';
+    const _copy: any = { ...params };
+    let options: any = {
+      params: new HttpParams({ fromObject: _copy }),
+      method: 'get'
+    };
+    return (this.http.request('get', url, options) as any) as Observable<any>;
+  }
+  /**
+   *
+   */
+  create(
+    params: {
+      /** requestBody */
+      body?: RefundLogDto;
+    } = {} as any
+  ): Observable<RefundLogDto> {
+    let url = '/api/mall/refundLog/create';
+    let options: any = {
+      body: params.body,
+      method: 'post'
+    };
+    return (this.http.request('post', url, options) as any) as Observable<RefundLogDto>;
+  }
+  /**
+   *
+   */
+  update(
+    params: {
+      /**  */
+      id?: string;
+      /** requestBody */
+      body?: RefundLogDto;
+    } = {} as any
+  ): Observable<RefundLogDto> {
+    let url = '/api/mall/refundLog/update';
+    let options: any = {
+      params: { id: params.id },
+      body: params.body,
+      method: 'put'
+    };
+    return (this.http.request('put', url, options) as any) as Observable<RefundLogDto>;
+  }
+  /**
+   *
+   */
+  delete(
+    params: {
+      /**  */
+      id?: string;
+    } = {} as any
+  ): Observable<any> {
+    let url = '/api/mall/refundLog/delete';
+    let options: any = {
+      params: { id: params.id },
+      method: 'delete'
+    };
+    return (this.http.request('delete', url, options) as any) as Observable<any>;
+  }
+  /**
+   *
+   */
+  get(
+    params: {
+      /**  */
+      id?: string;
+    } = {} as any
+  ): Observable<RefundLogDto> {
+    let url = '/api/mall/refundLog/get';
+    const _copy: any = { ...params };
+    let options: any = {
+      params: new HttpParams({ fromObject: _copy }),
+      method: 'get'
+    };
+    return (this.http.request('get', url, options) as any) as Observable<RefundLogDto>;
+  }
+  /**
+   *
+   */
+  getList(
+    params: {
+      /**  */
+      state?: number;
+      /**  */
+      keywords?: string;
+      /**  */
+      shopId?: string;
+      /**  */
+      spuId?: string;
+      /**  */
+      skuId?: string;
+      /**  */
+      appName?: string;
+      /**  */
+      locationType?: LocationType;
+      /**  */
+      sorting?: string;
+      /**  */
+      skipCount?: number;
+      /**  */
+      maxResultCount?: number;
+    } = {} as any
+  ): Observable<RefundLogDtoPagedResultDto> {
+    let url = '/api/mall/refundLog/getList';
+    const _copy: any = { ...params };
+    let options: any = {
+      params: new HttpParams({ fromObject: _copy }),
+      method: 'get'
+    };
+    return (this.http.request('get', url, options) as any) as Observable<RefundLogDtoPagedResultDto>;
   }
 }
 
@@ -1228,68 +2218,28 @@ export class ShopProxyService {
 }
 
 @Injectable({ providedIn: 'root' })
-export class TenantProxyService {
+export class SwiperProxyService {
   constructor(private http: HttpClient) {}
 
   /**
    *
    */
-  tenants(
+  getPublishList(
     params: {
       /**  */
-      id: string;
-    } = {} as any
-  ): Observable<TenantDto> {
-    let url = '/api/multi-tenancy/tenants/';
-    const _copy: any = { ...params };
-    let options: any = {
-      params: new HttpParams({ fromObject: _copy }),
-      method: 'get'
-    };
-    return (this.http.request('get', url, options) as any) as Observable<TenantDto>;
-  }
-  /**
-   *
-   */
-  tenants1(
-    params: {
+      state?: number;
       /**  */
-      id: string;
-      /** requestBody */
-      body?: TenantUpdateDto;
-    } = {} as any
-  ): Observable<TenantDto> {
-    let url = '/api/multi-tenancy/tenants/';
-    let options: any = {
-      params: { id: params.id },
-      body: params.body,
-      method: 'put'
-    };
-    return (this.http.request('put', url, options) as any) as Observable<TenantDto>;
-  }
-  /**
-   *
-   */
-  tenants2(
-    params: {
+      keywords?: string;
       /**  */
-      id: string;
-    } = {} as any
-  ): Observable<any> {
-    let url = '/api/multi-tenancy/tenants/';
-    let options: any = {
-      params: { id: params.id },
-      method: 'delete'
-    };
-    return (this.http.request('delete', url, options) as any) as Observable<any>;
-  }
-  /**
-   *
-   */
-  tenants3(
-    params: {
+      shopId?: string;
       /**  */
-      filter?: string;
+      spuId?: string;
+      /**  */
+      skuId?: string;
+      /**  */
+      appName?: string;
+      /**  */
+      locationType?: LocationType;
       /**  */
       sorting?: string;
       /**  */
@@ -1297,77 +2247,129 @@ export class TenantProxyService {
       /**  */
       maxResultCount?: number;
     } = {} as any
-  ): Observable<TenantDtoPagedResultDto> {
-    let url = '/api/multi-tenancy/tenants';
+  ): Observable<SwiperDtoListResultDto> {
+    let url = '/api/mall/swiper/getPublishList';
     const _copy: any = { ...params };
     let options: any = {
       params: new HttpParams({ fromObject: _copy }),
       method: 'get'
     };
-    return (this.http.request('get', url, options) as any) as Observable<TenantDtoPagedResultDto>;
+    return (this.http.request('get', url, options) as any) as Observable<SwiperDtoListResultDto>;
   }
   /**
    *
    */
-  tenants4(
+  getForEdit(
+    params: {
+      /**  */
+      id?: string;
+    } = {} as any
+  ): Observable<SwiperCreateOrUpdateDtoGetForEditOutput> {
+    let url = '/api/mall/swiper/getForEdit';
+    const _copy: any = { ...params };
+    let options: any = {
+      params: new HttpParams({ fromObject: _copy }),
+      method: 'get'
+    };
+    return (this.http.request('get', url, options) as any) as Observable<SwiperCreateOrUpdateDtoGetForEditOutput>;
+  }
+  /**
+   *
+   */
+  create(
     params: {
       /** requestBody */
-      body?: TenantCreateDto;
+      body?: SwiperCreateOrUpdateDto;
     } = {} as any
-  ): Observable<TenantDto> {
-    let url = '/api/multi-tenancy/tenants';
+  ): Observable<SwiperDto> {
+    let url = '/api/mall/swiper/create';
     let options: any = {
       body: params.body,
       method: 'post'
     };
-    return (this.http.request('post', url, options) as any) as Observable<TenantDto>;
+    return (this.http.request('post', url, options) as any) as Observable<SwiperDto>;
   }
   /**
    *
    */
-  defaultConnectionString(
+  get(
     params: {
       /**  */
-      id: string;
+      id?: string;
     } = {} as any
-  ): Observable<string> {
-    let url = '/api/multi-tenancy/tenants//default-connection-string';
+  ): Observable<SwiperDto> {
+    let url = '/api/mall/swiper/get';
     const _copy: any = { ...params };
     let options: any = {
       params: new HttpParams({ fromObject: _copy }),
       method: 'get'
     };
-    return (this.http.request('get', url, options) as any) as Observable<string>;
+    return (this.http.request('get', url, options) as any) as Observable<SwiperDto>;
   }
   /**
    *
    */
-  defaultConnectionString1(
+  getList(
     params: {
       /**  */
-      id: string;
+      state?: number;
       /**  */
-      defaultConnectionString?: string;
+      keywords?: string;
+      /**  */
+      shopId?: string;
+      /**  */
+      spuId?: string;
+      /**  */
+      skuId?: string;
+      /**  */
+      appName?: string;
+      /**  */
+      locationType?: LocationType;
+      /**  */
+      sorting?: string;
+      /**  */
+      skipCount?: number;
+      /**  */
+      maxResultCount?: number;
     } = {} as any
-  ): Observable<any> {
-    let url = '/api/multi-tenancy/tenants//default-connection-string';
+  ): Observable<SwiperDtoPagedResultDto> {
+    let url = '/api/mall/swiper/getList';
+    const _copy: any = { ...params };
+    let options: any = {
+      params: new HttpParams({ fromObject: _copy }),
+      method: 'get'
+    };
+    return (this.http.request('get', url, options) as any) as Observable<SwiperDtoPagedResultDto>;
+  }
+  /**
+   *
+   */
+  update(
+    params: {
+      /**  */
+      id?: string;
+      /** requestBody */
+      body?: SwiperCreateOrUpdateDto;
+    } = {} as any
+  ): Observable<SwiperDto> {
+    let url = '/api/mall/swiper/update';
     let options: any = {
       params: { id: params.id },
       body: params.body,
       method: 'put'
     };
-    return (this.http.request('put', url, options) as any) as Observable<any>;
+    return (this.http.request('put', url, options) as any) as Observable<SwiperDto>;
   }
   /**
    *
    */
-  defaultConnectionString2(
+  delete(
     params: {
       /**  */
-      id: string;
+      id?: string;
     } = {} as any
   ): Observable<any> {
-    let url = '/api/multi-tenancy/tenants//default-connection-string';
+    let url = '/api/mall/swiper/delete';
     let options: any = {
       params: { id: params.id },
       method: 'delete'
@@ -1544,6 +2546,154 @@ export class UserProxyService {
 }
 
 @Injectable({ providedIn: 'root' })
+export class UserCouponProxyService {
+  constructor(private http: HttpClient) {}
+
+  /**
+   *
+   */
+  getList(
+    params: {
+      /**  */
+      couponId?: string;
+      /**  */
+      state?: number;
+      /**  */
+      keywords?: string;
+      /**  */
+      shopId?: string;
+      /**  */
+      spuId?: string;
+      /**  */
+      skuId?: string;
+      /**  */
+      appName?: string;
+      /**  */
+      locationType?: LocationType;
+      /**  */
+      sorting?: string;
+      /**  */
+      skipCount?: number;
+      /**  */
+      maxResultCount?: number;
+    } = {} as any
+  ): Observable<UserCouponDtoPagedResultDto> {
+    let url = '/api/mall/userCoupon/getList';
+    const _copy: any = { ...params };
+    let options: any = {
+      params: new HttpParams({ fromObject: _copy }),
+      method: 'get'
+    };
+    return (this.http.request('get', url, options) as any) as Observable<UserCouponDtoPagedResultDto>;
+  }
+  /**
+   *
+   */
+  getPublicList(
+    params: {
+      /**  */
+      couponId?: string;
+      /**  */
+      state?: number;
+      /**  */
+      keywords?: string;
+      /**  */
+      shopId?: string;
+      /**  */
+      spuId?: string;
+      /**  */
+      skuId?: string;
+      /**  */
+      appName?: string;
+      /**  */
+      locationType?: LocationType;
+      /**  */
+      sorting?: string;
+      /**  */
+      skipCount?: number;
+      /**  */
+      maxResultCount?: number;
+    } = {} as any
+  ): Observable<UserCouponDtoListResultDto> {
+    let url = '/api/mall/userCoupon/getPublicList';
+    const _copy: any = { ...params };
+    let options: any = {
+      params: new HttpParams({ fromObject: _copy }),
+      method: 'get'
+    };
+    return (this.http.request('get', url, options) as any) as Observable<UserCouponDtoListResultDto>;
+  }
+  /**
+   *
+   */
+  get(
+    params: {
+      /**  */
+      id?: string;
+    } = {} as any
+  ): Observable<UserCouponDto> {
+    let url = '/api/mall/userCoupon/get';
+    const _copy: any = { ...params };
+    let options: any = {
+      params: new HttpParams({ fromObject: _copy }),
+      method: 'get'
+    };
+    return (this.http.request('get', url, options) as any) as Observable<UserCouponDto>;
+  }
+  /**
+   *
+   */
+  create(
+    params: {
+      /** requestBody */
+      body?: UserCouponCreateOrUpdateDto;
+    } = {} as any
+  ): Observable<UserCouponDto> {
+    let url = '/api/mall/userCoupon/create';
+    let options: any = {
+      body: params.body,
+      method: 'post'
+    };
+    return (this.http.request('post', url, options) as any) as Observable<UserCouponDto>;
+  }
+  /**
+   *
+   */
+  update(
+    params: {
+      /**  */
+      id?: string;
+      /** requestBody */
+      body?: UserCouponCreateOrUpdateDto;
+    } = {} as any
+  ): Observable<UserCouponDto> {
+    let url = '/api/mall/userCoupon/update';
+    let options: any = {
+      params: { id: params.id },
+      body: params.body,
+      method: 'put'
+    };
+    return (this.http.request('put', url, options) as any) as Observable<UserCouponDto>;
+  }
+  /**
+   *
+   */
+  delete(
+    params: {
+      /**  */
+      id?: string;
+    } = {} as any
+  ): Observable<any> {
+    let url = '/api/mall/userCoupon/delete';
+    let options: any = {
+      params: { id: params.id },
+      method: 'delete'
+    };
+    return (this.http.request('delete', url, options) as any) as Observable<any>;
+  }
+}
+
+@Injectable({ providedIn: 'root' })
 export class UserLookupProxyService {
   constructor(private http: HttpClient) {}
 
@@ -1680,6 +2830,33 @@ export class VisitorLogProxyService {
 }
 
 @Injectable({ providedIn: 'root' })
+export class WechatUserProxyService {
+  constructor(private http: HttpClient) {}
+
+  /**
+   *
+   */
+  getList(
+    params: {
+      /**  */
+      sorting?: string;
+      /**  */
+      skipCount?: number;
+      /**  */
+      maxResultCount?: number;
+    } = {} as any
+  ): Observable<WechatUserinfoPagedResultDto> {
+    let url = '/api/app/wechatUser/getList';
+    const _copy: any = { ...params };
+    let options: any = {
+      params: new HttpParams({ fromObject: _copy }),
+      method: 'get'
+    };
+    return (this.http.request('get', url, options) as any) as Observable<WechatUserinfoPagedResultDto>;
+  }
+}
+
+@Injectable({ providedIn: 'root' })
 export class WeixinProxyService {
   constructor(private http: HttpClient) {}
 
@@ -1722,14 +2899,12 @@ export class WeixinProxyService {
   miniAuth(
     params: {
       /**  */
-      appid?: string;
-      /**  */
-      appSec?: string;
+      appName: string;
       /** requestBody */
       body?: WeChatMiniProgramAuthenticateModel;
     } = {} as any
   ): Observable<any> {
-    let url = '/api/app/weixin/miniAuth';
+    let url = '/api/app/weixin/miniAuth/';
     let options: any = {
       body: params.body,
       method: 'post'
@@ -1771,6 +2946,22 @@ export class WeixinProxyService {
       method: 'get'
     };
     return (this.http.request('get', url, options) as any) as Observable<any>;
+  }
+  /**
+   *
+   */
+  getPhone(
+    params: {
+      /** requestBody */
+      body?: WeChatMiniProgramAuthenticateModel;
+    } = {} as any
+  ): Observable<any> {
+    let url = '/api/app/weixin/getPhone';
+    let options: any = {
+      body: params.body,
+      method: 'post'
+    };
+    return (this.http.request('post', url, options) as any) as Observable<any>;
   }
 }
 
@@ -1923,6 +3114,33 @@ export interface ApplicationApiDescriptionModel {
   types?: object;
 }
 
+export interface RemoteServiceValidationErrorInfo {
+  /**  */
+  message?: string;
+
+  /**  */
+  members?: string[];
+}
+
+export interface RemoteServiceErrorInfo {
+  /**  */
+  code?: string;
+
+  /**  */
+  message?: string;
+
+  /**  */
+  details?: string;
+
+  /**  */
+  validationErrors?: RemoteServiceValidationErrorInfo[];
+}
+
+export interface RemoteServiceErrorResponse {
+  /**  */
+  error?: RemoteServiceErrorInfo;
+}
+
 export interface LanguageInfo {
   /**  */
   cultureName?: string;
@@ -1998,6 +3216,9 @@ export interface ApplicationLocalizationConfigurationDto {
 
   /**  */
   currentCulture?: CurrentCultureDto;
+
+  /**  */
+  defaultResourceName?: string;
 }
 
 export interface ApplicationAuthConfigurationDto {
@@ -2048,6 +3269,116 @@ export interface CurrentTenantDto {
   isAvailable?: boolean;
 }
 
+export interface LocalizableStringDto {
+  /**  */
+  name?: string;
+
+  /**  */
+  resource?: string;
+}
+
+export interface ExtensionPropertyApiGetDto {
+  /**  */
+  isAvailable?: boolean;
+}
+
+export interface ExtensionPropertyApiCreateDto {
+  /**  */
+  isAvailable?: boolean;
+}
+
+export interface ExtensionPropertyApiUpdateDto {
+  /**  */
+  isAvailable?: boolean;
+}
+
+export interface ExtensionPropertyApiDto {
+  /**  */
+  onGet?: ExtensionPropertyApiGetDto;
+
+  /**  */
+  onCreate?: ExtensionPropertyApiCreateDto;
+
+  /**  */
+  onUpdate?: ExtensionPropertyApiUpdateDto;
+}
+
+export interface ExtensionPropertyUiTableDto {
+  /**  */
+  isVisible?: boolean;
+}
+
+export interface ExtensionPropertyUiFormDto {
+  /**  */
+  isVisible?: boolean;
+}
+
+export interface ExtensionPropertyUiDto {
+  /**  */
+  onTable?: ExtensionPropertyUiTableDto;
+
+  /**  */
+  onCreateForm?: ExtensionPropertyUiFormDto;
+
+  /**  */
+  onEditForm?: ExtensionPropertyUiFormDto;
+}
+
+export interface ExtensionPropertyAttributeDto {
+  /**  */
+  type?: string;
+
+  /**  */
+  typeSimple?: string;
+
+  /**  */
+  configuration?: object;
+}
+
+export interface ExtensionPropertyDto {
+  /**  */
+  type?: string;
+
+  /**  */
+  typeSimple?: string;
+
+  /**  */
+  displayName?: LocalizableStringDto;
+
+  /**  */
+  api?: ExtensionPropertyApiDto;
+
+  /**  */
+  ui?: ExtensionPropertyUiDto;
+
+  /**  */
+  attributes?: ExtensionPropertyAttributeDto[];
+
+  /**  */
+  configuration?: object;
+}
+
+export interface EntityExtensionDto {
+  /**  */
+  properties?: object;
+
+  /**  */
+  configuration?: object;
+}
+
+export interface ModuleExtensionDto {
+  /**  */
+  entities?: object;
+
+  /**  */
+  configuration?: object;
+}
+
+export interface ObjectExtensionsDto {
+  /**  */
+  modules?: object;
+}
+
 export interface ApplicationConfigurationDto {
   /**  */
   localization?: ApplicationLocalizationConfigurationDto;
@@ -2069,6 +3400,9 @@ export interface ApplicationConfigurationDto {
 
   /**  */
   currentTenant?: CurrentTenantDto;
+
+  /**  */
+  objectExtensions?: ObjectExtensionsDto;
 }
 
 export interface FindTenantResultDto {
@@ -2161,6 +3495,35 @@ export interface IdentityUserDto {
   extraProperties?: object;
 }
 
+export interface MallUserDto {
+  /**  */
+  id?: string;
+
+  /**  */
+  tenantId?: string;
+
+  /**  */
+  userName?: string;
+
+  /**  */
+  name?: string;
+
+  /**  */
+  email?: string;
+
+  /**  */
+  emailConfirmed?: boolean;
+
+  /**  */
+  phoneNumber?: string;
+
+  /**  */
+  phoneNumberConfirmed?: boolean;
+
+  /**  */
+  extraProperties?: object;
+}
+
 export interface AddressDto {
   /**  */
   realName?: string;
@@ -2169,7 +3532,7 @@ export interface AddressDto {
   phone?: string;
 
   /**  */
-  locationLable?: string;
+  locationLabel?: string;
 
   /**  */
   locationAddress?: string;
@@ -2193,6 +3556,12 @@ export interface AddressDto {
   locationType?: LocationType;
 
   /**  */
+  creatorId?: string;
+
+  /**  */
+  mallUser?: MallUserDto;
+
+  /**  */
   id?: string;
 }
 
@@ -2212,7 +3581,7 @@ export interface AddressCreateOrUpdateDto {
   phone?: string;
 
   /**  */
-  locationLable?: string;
+  locationLabel?: string;
 
   /**  */
   locationAddress?: string;
@@ -2230,6 +3599,267 @@ export interface AddressCreateOrUpdateDto {
   locationType?: LocationType;
 }
 
+export interface ILocalizableString {}
+
+export interface AppDefinition {
+  /**  */
+  name?: string;
+
+  /**  */
+  clientName?: string;
+
+  /**  */
+  defaultValues?: object;
+
+  /**  */
+  clientType?: string;
+
+  /**  */
+  providers?: string[];
+
+  /**  */
+  displayName?: ILocalizableString;
+}
+
+export interface AppDto {
+  /**  */
+  name?: string;
+
+  /**  */
+  clientName?: string;
+
+  /**  */
+  value?: object;
+
+  /**  */
+  providerName?: string;
+
+  /**  */
+  providerKey?: string;
+
+  /**  */
+  id?: string;
+}
+
+export interface AppDtoPagedResultDto {
+  /**  */
+  totalCount?: number;
+
+  /**  */
+  items?: AppDto[];
+}
+
+export interface AppCreateOrUpdateDto {
+  /**  */
+  name?: string;
+
+  /**  */
+  clientName?: string;
+
+  /**  */
+  providerName?: string;
+
+  /**  */
+  providerKey?: string;
+}
+
+export interface EntityPropertyChange {
+  /**  */
+  tenantId?: string;
+
+  /**  */
+  entityChangeId?: string;
+
+  /**  */
+  newValue?: string;
+
+  /**  */
+  originalValue?: string;
+
+  /**  */
+  propertyName?: string;
+
+  /**  */
+  propertyTypeFullName?: string;
+
+  /**  */
+  id?: string;
+}
+
+export interface EntityChange {
+  /**  */
+  auditLogId?: string;
+
+  /**  */
+  tenantId?: string;
+
+  /**  */
+  changeTime?: Date;
+
+  /**  */
+  changeType?: EntityChangeType;
+
+  /**  */
+  entityTenantId?: string;
+
+  /**  */
+  entityId?: string;
+
+  /**  */
+  entityTypeFullName?: string;
+
+  /**  */
+  propertyChanges?: EntityPropertyChange[];
+
+  /**  */
+  extraProperties?: object;
+
+  /**  */
+  id?: string;
+}
+
+export interface AuditLogAction {
+  /**  */
+  tenantId?: string;
+
+  /**  */
+  auditLogId?: string;
+
+  /**  */
+  serviceName?: string;
+
+  /**  */
+  methodName?: string;
+
+  /**  */
+  parameters?: string;
+
+  /**  */
+  executionTime?: Date;
+
+  /**  */
+  executionDuration?: number;
+
+  /**  */
+  extraProperties?: object;
+
+  /**  */
+  id?: string;
+}
+
+export interface AuditLogListDto {
+  /**  */
+  applicationName?: string;
+
+  /**  */
+  userId?: string;
+
+  /**  */
+  userName?: string;
+
+  /**  */
+  tenantId?: string;
+
+  /**  */
+  tenantName?: string;
+
+  /**  */
+  impersonatorUserId?: string;
+
+  /**  */
+  impersonatorTenantId?: string;
+
+  /**  */
+  executionTime?: Date;
+
+  /**  */
+  executionDuration?: number;
+
+  /**  */
+  clientIpAddress?: string;
+
+  /**  */
+  clientName?: string;
+
+  /**  */
+  clientId?: string;
+
+  /**  */
+  correlationId?: string;
+
+  /**  */
+  browserInfo?: string;
+
+  /**  */
+  httpMethod?: string;
+
+  /**  */
+  url?: string;
+
+  /**  */
+  exceptions?: string;
+
+  /**  */
+  comments?: string;
+
+  /**  */
+  httpStatusCode?: number;
+
+  /**  */
+  entityChanges?: EntityChange[];
+
+  /**  */
+  actions?: AuditLogAction[];
+}
+
+export interface AuditLogListDtoPagedResultDto {
+  /**  */
+  totalCount?: number;
+
+  /**  */
+  items?: AuditLogListDto[];
+}
+
+export interface ICurrentUser {
+  /**  */
+  isAuthenticated?: boolean;
+
+  /**  */
+  id?: string;
+
+  /**  */
+  userName?: string;
+
+  /**  */
+  phoneNumber?: string;
+
+  /**  */
+  phoneNumberVerified?: boolean;
+
+  /**  */
+  email?: string;
+
+  /**  */
+  emailVerified?: boolean;
+
+  /**  */
+  tenantId?: string;
+
+  /**  */
+  roles?: string[];
+}
+
+export interface ClientInitRequestDto {
+  /**  */
+  systemInfo?: object;
+
+  /**  */
+  currentUser?: ICurrentUser;
+
+  /**  */
+  shopId?: string;
+}
+
 export interface WeChatMiniProgramAuthenticateModel {
   /**  */
   code?: string;
@@ -2242,11 +3872,601 @@ export interface WeChatMiniProgramAuthenticateModel {
 
   /**  */
   session_key?: string;
+
+  /**  */
+  appid?: string;
 }
 
 export interface AddressDtoListResultDto {
   /**  */
   items?: AddressDto[];
+}
+
+export interface ShopDto {
+  /**  */
+  name?: string;
+
+  /**  */
+  shortName?: string;
+
+  /**  */
+  logoImage?: string;
+
+  /**  */
+  coverImage?: string;
+
+  /**  */
+  description?: string;
+
+  /**  */
+  isDeleted?: boolean;
+
+  /**  */
+  deleterId?: string;
+
+  /**  */
+  deletionTime?: Date;
+
+  /**  */
+  lastModificationTime?: Date;
+
+  /**  */
+  lastModifierId?: string;
+
+  /**  */
+  creationTime?: Date;
+
+  /**  */
+  creatorId?: string;
+
+  /**  */
+  id?: string;
+}
+
+export interface ProductSpuDtoBase {
+  /**  */
+  id?: string;
+
+  /**  */
+  name?: string;
+
+  /**  */
+  code?: string;
+
+  /**  */
+  dateTimeStart?: Date;
+
+  /**  */
+  dateTimeEnd?: Date;
+
+  /**  */
+  stockCount?: number;
+
+  /**  */
+  soldCount?: number;
+
+  /**  */
+  limitBuyCount?: number;
+
+  /**  */
+  skus?: ProductSkuDto[];
+}
+
+export interface AppProductCategoryDto {
+  /**  */
+  appName?: string;
+
+  /**  */
+  productCategoryId?: string;
+
+  /**  */
+  productCategoryName?: string;
+
+  /**  */
+  sort?: number;
+}
+
+export interface ProductCategoryDto {
+  /**  */
+  name?: string;
+
+  /**  */
+  code?: string;
+
+  /**  */
+  logoImageUrl?: string;
+
+  /**  */
+  redirectUrl?: string;
+
+  /**  */
+  sort?: number;
+
+  /**  */
+  isGlobal?: boolean;
+
+  /**  */
+  shop?: ShopDto;
+
+  /**  */
+  spus?: ProductSpuDtoBase[];
+
+  /**  */
+  totalCount?: number;
+
+  /**  */
+  appProductCategories?: AppProductCategoryDto[];
+
+  /**  */
+  lastModificationTime?: Date;
+
+  /**  */
+  lastModifierId?: string;
+
+  /**  */
+  creationTime?: Date;
+
+  /**  */
+  creatorId?: string;
+
+  /**  */
+  id?: string;
+}
+
+export interface MallShopDto {
+  /**  */
+  name?: string;
+
+  /**  */
+  shortName?: string;
+
+  /**  */
+  logoImage?: string;
+
+  /**  */
+  coverImage?: string;
+
+  /**  */
+  description?: string;
+
+  /**  */
+  id?: string;
+}
+
+export interface AppProductSpuDto {
+  /**  */
+  appName?: string;
+
+  /**  */
+  productSpuId?: string;
+}
+
+export interface ProductSpuDto {
+  /**  */
+  category?: ProductCategoryDto;
+
+  /**  */
+  shop?: MallShopDto;
+
+  /**  */
+  shopId?: string;
+
+  /**  */
+  skus?: ProductSkuDto[];
+
+  /**  */
+  name?: string;
+
+  /**  */
+  code?: string;
+
+  /**  */
+  descCommon?: string;
+
+  /**  */
+  purchaseNotesCommon?: string;
+
+  /**  */
+  dateTimeStart?: Date;
+
+  /**  */
+  dateTimeEnd?: Date;
+
+  /**  */
+  stockCount?: number;
+
+  /**  */
+  soldCount?: number;
+
+  /**  */
+  limitBuyCount?: number;
+
+  /**  */
+  appProductSpus?: AppProductSpuDto[];
+
+  /**  */
+  lastModificationTime?: Date;
+
+  /**  */
+  lastModifierId?: string;
+
+  /**  */
+  creationTime?: Date;
+
+  /**  */
+  creatorId?: string;
+
+  /**  */
+  id?: string;
+}
+
+export interface ProductSkuDto {
+  /**  */
+  spuId?: string;
+
+  /**  */
+  name?: string;
+
+  /**  */
+  code?: string;
+
+  /**  */
+  price?: number;
+
+  /**  */
+  desc?: string;
+
+  /**  */
+  purchaseNotes?: string;
+
+  /**  */
+  originPrice?: number;
+
+  /**  */
+  vipPrice?: number;
+
+  /**  */
+  coverImageUrls?: string[];
+
+  /**  */
+  dateTimeStart?: Date;
+
+  /**  */
+  dateTimeEnd?: Date;
+
+  /**  */
+  stockCount?: number;
+
+  /**  */
+  soldCount?: number;
+
+  /**  */
+  limitBuyCount?: number;
+
+  /**  */
+  unit?: string;
+
+  /**  */
+  num?: number;
+
+  /**  */
+  comment?: string;
+
+  /**  */
+  shopId?: string;
+
+  /**  */
+  spuName?: string;
+
+  /**  */
+  spu?: ProductSpuDto;
+
+  /**  */
+  lastModificationTime?: Date;
+
+  /**  */
+  lastModifierId?: string;
+
+  /**  */
+  creationTime?: Date;
+
+  /**  */
+  creatorId?: string;
+
+  /**  */
+  id?: string;
+}
+
+export interface ProductOrderRequestDto {
+  /**  */
+  address?: AddressDto;
+
+  /**  */
+  skus?: ProductSkuDto[];
+
+  /**  */
+  comment?: string;
+}
+
+export interface QrDetail {
+  /**  */
+  appName?: string;
+
+  /**  */
+  eventName?: string;
+
+  /**  */
+  eventKey?: string;
+
+  /**  */
+  params?: object;
+
+  /**  */
+  viewCount?: number;
+
+  /**  */
+  tenantId?: string;
+
+  /**  */
+  path?: string;
+
+  /**  */
+  qrImageUrl?: string;
+
+  /**  */
+  creationTime?: Date;
+
+  /**  */
+  creatorId?: string;
+
+  /**  */
+  id?: string;
+}
+
+export interface TenPayNotifyXml {
+  /**  */
+  appid?: string;
+
+  /**  */
+  mch_id?: string;
+
+  /**  */
+  device_info?: string;
+
+  /**  */
+  nonce_str?: string;
+
+  /**  */
+  sign?: string;
+
+  /**  */
+  result_code?: string;
+
+  /**  */
+  err_code?: string;
+
+  /**  */
+  err_code_des?: string;
+
+  /**  */
+  trade_type?: string;
+
+  /**  */
+  bank_type?: string;
+
+  /**  */
+  is_subscribe?: string;
+
+  /**  */
+  openid?: string;
+
+  /**  */
+  total_fee?: string;
+
+  /**  */
+  settlement_total_fee?: number;
+
+  /**  */
+  fee_type?: string;
+
+  /**  */
+  cash_fee?: string;
+
+  /**  */
+  cash_fee_type?: string;
+
+  /**  */
+  transaction_id?: string;
+
+  /**  */
+  out_trade_no?: string;
+
+  /**  */
+  time_end?: string;
+
+  /**  */
+  return_code?: string;
+
+  /**  */
+  return_msg?: string;
+}
+
+export interface CategoryCreateOrUpdate {
+  /**  */
+  name?: string;
+}
+
+export interface CategoryDto {
+  /**  */
+  name?: string;
+
+  /**  */
+  zan?: number;
+
+  /**  */
+  id?: string;
+}
+
+export interface CategoryCreateOrUpdateGetForEditOutput {
+  /**  */
+  data?: CategoryCreateOrUpdate;
+
+  /**  */
+  schema?: any | null;
+}
+
+export interface CategoryDtoPagedResultDto {
+  /**  */
+  totalCount?: number;
+
+  /**  */
+  items?: CategoryDto[];
+}
+
+export interface CommentCreateOrUpdateDto {
+  /**  */
+  content?: string;
+
+  /**  */
+  spuId?: string;
+
+  /**  */
+  skuId?: string;
+
+  /**  */
+  shopId?: string;
+}
+
+export interface CommentDto {
+  /**  */
+  buyerName?: string;
+
+  /**  */
+  buyerAvatar?: string;
+
+  /**  */
+  content?: string;
+
+  /**  */
+  level?: number;
+
+  /**  */
+  status?: number;
+
+  /**  */
+  spuId?: string;
+
+  /**  */
+  skuId?: string;
+
+  /**  */
+  shopId?: string;
+
+  /**  */
+  creationTime?: Date;
+
+  /**  */
+  creatorId?: string;
+
+  /**  */
+  id?: string;
+}
+
+export interface CommentDtoPagedResultDto {
+  /**  */
+  totalCount?: number;
+
+  /**  */
+  items?: CommentDto[];
+}
+
+export interface CouponDto {
+  /**  */
+  amount?: number;
+
+  /**  */
+  name?: string;
+
+  /**  */
+  code?: string;
+
+  /**  */
+  desc?: string;
+
+  /**  */
+  count?: number;
+
+  /**  */
+  totalCount?: number;
+
+  /**  */
+  useType?: UseType;
+
+  /**  */
+  state?: number;
+
+  /**  */
+  dateTimeEnable?: Date;
+
+  /**  */
+  dateTimeStart?: Date;
+
+  /**  */
+  datetimeEnd?: Date;
+
+  /**  */
+  useCount?: number;
+
+  /**  */
+  id?: string;
+}
+
+export interface CouponDtoListResultDto {
+  /**  */
+  items?: CouponDto[];
+}
+
+export interface CouponDtoPagedResultDto {
+  /**  */
+  totalCount?: number;
+
+  /**  */
+  items?: CouponDto[];
+}
+
+export interface CouponCreateOrUpdateDto {
+  /**  */
+  amount?: number;
+
+  /**  */
+  name?: string;
+
+  /**  */
+  code?: string;
+
+  /**  */
+  desc?: string;
+
+  /**  */
+  count?: number;
+
+  /**  */
+  totalCount?: number;
+
+  /**  */
+  useType?: UseType;
+
+  /**  */
+  state?: number;
+
+  /**  */
+  dateTimeEnable?: Date;
+
+  /**  */
+  dateTimeStart?: Date;
+
+  /**  */
+  datetimeEnd?: Date;
 }
 
 export interface IValueValidator {
@@ -2469,26 +4689,6 @@ export interface FormAddShopRequestDto {
   shopIds?: string[];
 }
 
-export interface MallShopDto {
-  /**  */
-  name?: string;
-
-  /**  */
-  shortName?: string;
-
-  /**  */
-  logoImage?: string;
-
-  /**  */
-  coverImage?: string;
-
-  /**  */
-  description?: string;
-
-  /**  */
-  id?: string;
-}
-
 export interface MallShopDtoListResultDto {
   /**  */
   items?: MallShopDto[];
@@ -2497,6 +4697,182 @@ export interface MallShopDtoListResultDto {
 export interface ShopSyncRequestDto {
   /**  */
   shopIds?: string[];
+}
+
+export interface MallUserDtoPagedResultDto {
+  /**  */
+  totalCount?: number;
+
+  /**  */
+  items?: MallUserDto[];
+}
+
+export interface PartnerDetail {
+  /**  */
+  noticeContent?: string;
+
+  /**  */
+  weixin?: string;
+
+  /**  */
+  introducting?: string;
+}
+
+export interface PartnerDto {
+  /**  */
+  backupPhone?: string;
+
+  /**  */
+  updateDate?: Date;
+
+  /**  */
+  state?: PartnerState;
+
+  /**  */
+  totalWithdrawals?: number;
+
+  /**  */
+  lastLoginDate?: Date;
+
+  /**  */
+  lat?: number;
+
+  /**  */
+  lng?: number;
+
+  /**  */
+  locationLabel?: string;
+
+  /**  */
+  locationAddress?: string;
+
+  /**  */
+  locationType?: LocationType;
+
+  /**  */
+  detail?: PartnerDetail;
+
+  /**  */
+  realName?: string;
+
+  /**  */
+  phone?: string;
+
+  /**  */
+  headImgUrl?: string;
+
+  /**  */
+  avblBalance?: number;
+
+  /**  */
+  unavblBalance?: number;
+}
+
+export interface PartnerDtoPagedResultDto {
+  /**  */
+  totalCount?: number;
+
+  /**  */
+  items?: PartnerDto[];
+}
+
+export interface PartnerCreateOrUpdateDto {
+  /**  */
+  realName?: string;
+
+  /**  */
+  phone?: string;
+
+  /**  */
+  phoneBackup?: string;
+
+  /**  */
+  lat?: number;
+
+  /**  */
+  lng?: number;
+
+  /**  */
+  locationLabel?: string;
+
+  /**  */
+  locationAddress?: string;
+
+  /**  */
+  locationType?: LocationType;
+
+  /**  */
+  introducting?: string;
+}
+
+export interface PayOrderDto {
+  /**  */
+  id?: string;
+
+  /**  */
+  totalPrice?: number;
+
+  /**  */
+  body?: string;
+
+  /**  */
+  billNo?: string;
+
+  /**  */
+  appName?: string;
+
+  /**  */
+  openId?: string;
+
+  /**  */
+  mchId?: string;
+
+  /**  */
+  state?: PayState;
+
+  /**  */
+  type?: OrderType;
+
+  /**  */
+  shopId?: string;
+
+  /**  */
+  creationTime?: Date;
+
+  /**  */
+  payType?: PayType;
+
+  /**  */
+  isSuccessPay?: boolean;
+
+  /**  */
+  successPayTime?: Date;
+
+  /**  */
+  isRefund?: boolean;
+
+  /**  */
+  refundTime?: Date;
+
+  /**  */
+  refundComplateTime?: Date;
+
+  /**  */
+  refundPrice?: number;
+
+  /**  */
+  shareFromUserId?: string;
+
+  /**  */
+  partnerId?: string;
+}
+
+export interface PayOrderDtoPagedResultDto {
+  /**  */
+  totalCount?: number;
+
+  /**  */
+  items?: PayOrderDto[];
 }
 
 export interface ProviderInfoDto {
@@ -2559,113 +4935,6 @@ export interface UpdatePermissionsDto {
   permissions?: UpdatePermissionDto[];
 }
 
-export interface ShopDto {
-  /**  */
-  name?: string;
-
-  /**  */
-  shortName?: string;
-
-  /**  */
-  logoImage?: string;
-
-  /**  */
-  coverImage?: string;
-
-  /**  */
-  description?: string;
-
-  /**  */
-  isDeleted?: boolean;
-
-  /**  */
-  deleterId?: string;
-
-  /**  */
-  deletionTime?: Date;
-
-  /**  */
-  lastModificationTime?: Date;
-
-  /**  */
-  lastModifierId?: string;
-
-  /**  */
-  creationTime?: Date;
-
-  /**  */
-  creatorId?: string;
-
-  /**  */
-  id?: string;
-}
-
-export interface ProductSpuDtoBase {
-  /**  */
-  name?: string;
-
-  /**  */
-  code?: string;
-
-  /**  */
-  dateTimeStart?: Date;
-
-  /**  */
-  dateTimeEnd?: Date;
-
-  /**  */
-  stockCount?: number;
-
-  /**  */
-  soldCount?: number;
-
-  /**  */
-  limitBuyCount?: number;
-}
-
-export interface ProductCategoryDto {
-  /**  */
-  name?: string;
-
-  /**  */
-  code?: string;
-
-  /**  */
-  logoImageUrl?: string;
-
-  /**  */
-  shop?: ShopDto;
-
-  /**  */
-  spus?: ProductSpuDtoBase[];
-
-  /**  */
-  totalCount?: number;
-
-  /**  */
-  lastModificationTime?: Date;
-
-  /**  */
-  lastModifierId?: string;
-
-  /**  */
-  creationTime?: Date;
-
-  /**  */
-  creatorId?: string;
-
-  /**  */
-  id?: string;
-}
-
-export interface ProductCategoryDtoPagedResultDto {
-  /**  */
-  totalCount?: number;
-
-  /**  */
-  items?: ProductCategoryDto[];
-}
-
 export interface CategoryCreateOrUpdateDto {
   /**  */
   name?: string;
@@ -2678,165 +4947,169 @@ export interface CategoryCreateOrUpdateDto {
 
   /**  */
   shopId?: string;
+
+  /**  */
+  redirectUrl?: string;
+
+  /**  */
+  sort?: number;
+
+  /**  */
+  isGlobal?: boolean;
+
+  /**  */
+  appProductCategories?: AppProductCategoryDto[];
+
+  /**  */
+  apps?: object[];
 }
 
-export interface MallShop {
+export interface CategoryCreateOrUpdateDtoGetForEditOutput {
   /**  */
-  name?: string;
+  data?: CategoryCreateOrUpdateDto;
 
   /**  */
-  shortName?: string;
-
-  /**  */
-  logoImage?: string;
-
-  /**  */
-  coverImage?: string;
-
-  /**  */
-  description?: string;
-
-  /**  */
-  tenantId?: string;
-
-  /**  */
-  bussinessHours?: string;
-
-  /**  */
-  address?: string;
-
-  /**  */
-  lat?: number;
-
-  /**  */
-  lng?: number;
-
-  /**  */
-  extraProperties?: object;
-
-  /**  */
-  concurrencyStamp?: string;
-
-  /**  */
-  id?: string;
+  schema?: any | null;
 }
 
-export interface ProductSpuDto {
+export interface ProductCategoryDtoPagedResultDto {
   /**  */
-  category?: ProductCategoryDto;
+  totalCount?: number;
 
   /**  */
-  shop?: MallShop;
-
-  /**  */
-  skus?: ProductSkuDto[];
-
-  /**  */
-  name?: string;
-
-  /**  */
-  code?: string;
-
-  /**  */
-  descCommon?: string;
-
-  /**  */
-  purchaseNotesCommon?: string;
-
-  /**  */
-  dateTimeStart?: Date;
-
-  /**  */
-  dateTimeEnd?: Date;
-
-  /**  */
-  stockCount?: number;
-
-  /**  */
-  soldCount?: number;
-
-  /**  */
-  limitBuyCount?: number;
-
-  /**  */
-  lastModificationTime?: Date;
-
-  /**  */
-  lastModifierId?: string;
-
-  /**  */
-  creationTime?: Date;
-
-  /**  */
-  creatorId?: string;
-
-  /**  */
-  id?: string;
+  items?: ProductCategoryDto[];
 }
 
-export interface ProductSkuDto {
+export interface ProductOrderItemDto {
   /**  */
   spuId?: string;
 
   /**  */
-  name?: string;
+  skuId?: string;
 
   /**  */
-  code?: string;
+  num?: number;
 
   /**  */
-  price?: number;
+  skuPrice?: number;
 
   /**  */
-  desc?: string;
+  spuName?: string;
 
   /**  */
-  purchaseNotes?: string;
+  skuName?: string;
 
   /**  */
-  originPrice?: number;
+  skuUnit?: string;
 
   /**  */
-  vipPrice?: number;
+  skuCoverImageUrl?: string;
 
   /**  */
-  coverImageUrls?: string[];
+  discount?: number;
 
   /**  */
-  dateTimeStart?: Date;
+  comment?: string;
+}
+
+export interface ProductOrderDto {
+  /**  */
+  payOrderId?: string;
 
   /**  */
-  dateTimeEnd?: Date;
+  billNo?: string;
 
   /**  */
-  stockCount?: number;
+  pricePaidIn?: number;
 
   /**  */
-  soldCount?: number;
+  priceOriginal?: number;
 
   /**  */
-  limitBuyCount?: number;
+  state?: OrderState;
 
   /**  */
-  unit?: string;
+  type?: ProductOrderType;
 
   /**  */
-  spu?: ProductSpuDto;
+  payType?: PayType;
 
   /**  */
-  lastModificationTime?: Date;
+  comment?: string;
 
   /**  */
-  lastModifierId?: string;
+  buyerId?: string;
+
+  /**  */
+  addressId?: string;
+
+  /**  */
+  addressRealName?: string;
+
+  /**  */
+  addressNickName?: string;
+
+  /**  */
+  addressPhone?: string;
+
+  /**  */
+  addressLocationLabel?: string;
+
+  /**  */
+  addressLocationAddress?: string;
+
+  /**  */
+  manId?: string;
+
+  /**  */
+  printCount?: number;
+
+  /**  */
+  shopId?: string;
+
+  /**  */
+  shop?: MallShopDto;
 
   /**  */
   creationTime?: Date;
 
   /**  */
-  creatorId?: string;
+  orderItems?: ProductOrderItemDto[];
 
   /**  */
   id?: string;
+}
+
+export interface ProductOrderDtoPagedResultDto {
+  /**  */
+  totalCount?: number;
+
+  /**  */
+  items?: ProductOrderDto[];
+}
+
+export interface ProductOrderCreateOrUpdateDto {}
+
+export interface OrderPayRequestDto {
+  /**  */
+  orderId?: string;
+
+  /**  */
+  client?: string;
+
+  /**  */
+  openid?: string;
+}
+
+export interface RefundRequestDto {
+  /**  */
+  orderId?: string;
+
+  /**  */
+  refundPrice?: number;
+
+  /**  */
+  reason?: string;
 }
 
 export interface ProductSkuDtoPagedResultDto {
@@ -2895,9 +5168,289 @@ export interface SkuCreateOrUpdateDto {
 
   /**  */
   unit?: string;
+
+  /**  */
+  commissionEnable?: boolean;
+
+  /**  */
+  commissionPrice?: number;
+}
+
+export interface AppProductCategory {
+  /**  */
+  appName?: string;
+
+  /**  */
+  productCategoryId?: string;
+
+  /**  */
+  sort?: number;
+
+  /**  */
+  tenantId?: string;
+
+  /**  */
+  productCategory?: ProductCategory;
+
+  /**  */
+  creationTime?: Date;
+
+  /**  */
+  creatorId?: string;
+}
+
+export interface ProductCategory {
+  /**  */
+  name?: string;
+
+  /**  */
+  code?: string;
+
+  /**  */
+  logoImageUrl?: string;
+
+  /**  */
+  redirectUrl?: string;
+
+  /**  */
+  spuList?: ProductSpu[];
+
+  /**  */
+  tenantId?: string;
+
+  /**  */
+  shopId?: string;
+
+  /**  */
+  sort?: number;
+
+  /**  */
+  isGlobal?: boolean;
+
+  /**  */
+  appProductCategories?: AppProductCategory[];
+
+  /**  */
+  isDeleted?: boolean;
+
+  /**  */
+  deleterId?: string;
+
+  /**  */
+  deletionTime?: Date;
+
+  /**  */
+  lastModificationTime?: Date;
+
+  /**  */
+  lastModifierId?: string;
+
+  /**  */
+  creationTime?: Date;
+
+  /**  */
+  creatorId?: string;
+
+  /**  */
+  extraProperties?: object;
+
+  /**  */
+  concurrencyStamp?: string;
+
+  /**  */
+  id?: string;
+}
+
+export interface ProductSku {
+  /**  */
+  spuId?: string;
+
+  /**  */
+  name?: string;
+
+  /**  */
+  code?: string;
+
+  /**  */
+  price?: number;
+
+  /**  */
+  desc?: string;
+
+  /**  */
+  purchaseNotes?: string;
+
+  /**  */
+  originPrice?: number;
+
+  /**  */
+  vipPrice?: number;
+
+  /**  */
+  coverImageUrls?: string[];
+
+  /**  */
+  dateTimeStart?: Date;
+
+  /**  */
+  dateTimeEnd?: Date;
+
+  /**  */
+  stockCount?: number;
+
+  /**  */
+  soldCount?: number;
+
+  /**  */
+  limitBuyCount?: number;
+
+  /**  */
+  unit?: string;
+
+  /**  */
+  tenantId?: string;
+
+  /**  */
+  shopId?: string;
+
+  /**  */
+  commissionPrice?: number;
+
+  /**  */
+  commissionEnable?: boolean;
+
+  /**  */
+  spu?: ProductSpu;
+
+  /**  */
+  isDeleted?: boolean;
+
+  /**  */
+  deleterId?: string;
+
+  /**  */
+  deletionTime?: Date;
+
+  /**  */
+  lastModificationTime?: Date;
+
+  /**  */
+  lastModifierId?: string;
+
+  /**  */
+  creationTime?: Date;
+
+  /**  */
+  creatorId?: string;
+
+  /**  */
+  extraProperties?: object;
+
+  /**  */
+  concurrencyStamp?: string;
+
+  /**  */
+  id?: string;
+}
+
+export interface ProductSpu {
+  /**  */
+  categoryId?: string;
+
+  /**  */
+  tenantId?: string;
+
+  /**  */
+  shopId?: string;
+
+  /**  */
+  name?: string;
+
+  /**  */
+  code?: string;
+
+  /**  */
+  descCommon?: string;
+
+  /**  */
+  purchaseNotesCommon?: string;
+
+  /**  */
+  dateTimeStart?: Date;
+
+  /**  */
+  dateTimeEnd?: Date;
+
+  /**  */
+  limitBuyCount?: number;
+
+  /**  */
+  soldCount?: number;
+
+  /**  */
+  category?: ProductCategory;
+
+  /**  */
+  skus?: ProductSku[];
+
+  /**  */
+  appProductSpus?: AppProductSpu[];
+
+  /**  */
+  isDeleted?: boolean;
+
+  /**  */
+  deleterId?: string;
+
+  /**  */
+  deletionTime?: Date;
+
+  /**  */
+  lastModificationTime?: Date;
+
+  /**  */
+  lastModifierId?: string;
+
+  /**  */
+  creationTime?: Date;
+
+  /**  */
+  creatorId?: string;
+
+  /**  */
+  extraProperties?: object;
+
+  /**  */
+  concurrencyStamp?: string;
+
+  /**  */
+  id?: string;
+}
+
+export interface AppProductSpu {
+  /**  */
+  appName?: string;
+
+  /**  */
+  productSpuId?: string;
+
+  /**  */
+  tenantId?: string;
+
+  /**  */
+  productSpu?: ProductSpu;
+
+  /**  */
+  creationTime?: Date;
+
+  /**  */
+  creatorId?: string;
 }
 
 export interface SpuCreateOrUpdateDto {
+  /**  */
+  shopId?: string;
+
   /**  */
   categoryId?: string;
 
@@ -2930,6 +5483,12 @@ export interface SpuCreateOrUpdateDto {
 
   /**  */
   skus?: SkuCreateOrUpdateDto[];
+
+  /**  */
+  appProductSpus?: AppProductSpu[];
+
+  /**  */
+  apps?: object[];
 }
 
 export interface SpuCreateOrUpdateDtoGetForEditOutput {
@@ -2946,6 +5505,38 @@ export interface ProductSpuDtoPagedResultDto {
 
   /**  */
   items?: ProductSpuDto[];
+}
+
+export interface MallRequestDto {
+  /**  */
+  state?: number;
+
+  /**  */
+  keywords?: string;
+
+  /**  */
+  shopId?: string;
+
+  /**  */
+  spuId?: string;
+
+  /**  */
+  skuId?: string;
+
+  /**  */
+  appName?: string;
+
+  /**  */
+  locationType?: LocationType;
+
+  /**  */
+  sorting?: string;
+
+  /**  */
+  skipCount?: number;
+
+  /**  */
+  maxResultCount?: number;
 }
 
 export interface ProfileDto {
@@ -2994,6 +5585,103 @@ export interface ChangePasswordInput {
 
   /**  */
   newPassword?: string;
+}
+
+export interface UserProfileInput {
+  /**  */
+  isAuthenticated?: boolean;
+
+  /**  */
+  userName?: string;
+
+  /**  */
+  name?: string;
+
+  /**  */
+  surname?: string;
+
+  /**  */
+  phoneNumber?: string;
+
+  /**  */
+  phoneNumberConfirmed?: boolean;
+
+  /**  */
+  email?: string;
+
+  /**  */
+  password?: string;
+
+  /**  */
+  passwordConfirm?: string;
+
+  /**  */
+  nickname?: string;
+
+  /**  */
+  headImgUrl?: string;
+
+  /**  */
+  tenantId?: string;
+
+  /**  */
+  id?: string;
+}
+
+export interface RealNameInfoDto {
+  /**  */
+  realName?: string;
+
+  /**  */
+  phone?: string;
+
+  /**  */
+  type?: RealNameInfoType;
+
+  /**  */
+  idCardFrontUrl?: string;
+
+  /**  */
+  idCardBackUrl?: string;
+
+  /**  */
+  idCardHandUrl?: string;
+
+  /**  */
+  businessLicenseUrl?: string;
+
+  /**  */
+  state?: RealNameInfoState;
+
+  /**  */
+  id?: string;
+}
+
+export interface RealNameInfoDtoPagedResultDto {
+  /**  */
+  totalCount?: number;
+
+  /**  */
+  items?: RealNameInfoDto[];
+}
+
+export interface RefundLogDto {
+  /**  */
+  creationTime?: Date;
+
+  /**  */
+  creatorId?: string;
+
+  /**  */
+  id?: string;
+}
+
+export interface RefundLogDtoPagedResultDto {
+  /**  */
+  totalCount?: number;
+
+  /**  */
+  items?: RefundLogDto[];
 }
 
 export interface IdentityRoleDto {
@@ -3086,6 +5774,82 @@ export interface VisitorShopCreateOrEditDto {
 
   /**  */
   description?: string;
+}
+
+export interface SwiperDto {
+  /**  */
+  groupName?: string;
+
+  /**  */
+  appName?: string;
+
+  /**  */
+  coverImageUrl?: string;
+
+  /**  */
+  name?: string;
+
+  /**  */
+  redirectUrl?: string;
+
+  /**  */
+  state?: number;
+
+  /**  */
+  sort?: number;
+
+  /**  */
+  shopId?: string;
+
+  /**  */
+  id?: string;
+}
+
+export interface SwiperDtoListResultDto {
+  /**  */
+  items?: SwiperDto[];
+}
+
+export interface SwiperCreateOrUpdateDto {
+  /**  */
+  groupName?: string;
+
+  /**  */
+  appName?: string;
+
+  /**  */
+  coverImageUrl?: string;
+
+  /**  */
+  name?: string;
+
+  /**  */
+  redirectUrl?: string;
+
+  /**  */
+  state?: number;
+
+  /**  */
+  sort?: number;
+
+  /**  */
+  shopId?: string;
+}
+
+export interface SwiperCreateOrUpdateDtoGetForEditOutput {
+  /**  */
+  data?: SwiperCreateOrUpdateDto;
+
+  /**  */
+  schema?: any | null;
+}
+
+export interface SwiperDtoPagedResultDto {
+  /**  */
+  totalCount?: number;
+
+  /**  */
+  items?: SwiperDto[];
 }
 
 export interface TenantDto {
@@ -3209,6 +5973,59 @@ export interface IdentityUserUpdateRolesDto {
   roleNames?: string[];
 }
 
+export interface UserCouponDto {
+  /**  */
+  couponId?: string;
+
+  /**  */
+  ownerUserId?: string;
+
+  /**  */
+  couponName?: string;
+
+  /**  */
+  couponAmount?: number;
+
+  /**  */
+  paymentId?: string;
+
+  /**  */
+  usedTime?: Date;
+
+  /**  */
+  usedOrderId?: string;
+
+  /**  */
+  usedOrderType?: OrderType;
+
+  /**  */
+  coupon?: CouponDto;
+
+  /**  */
+  id?: string;
+}
+
+export interface UserCouponDtoPagedResultDto {
+  /**  */
+  totalCount?: number;
+
+  /**  */
+  items?: UserCouponDto[];
+}
+
+export interface UserCouponDtoListResultDto {
+  /**  */
+  items?: UserCouponDto[];
+}
+
+export interface UserCouponCreateOrUpdateDto {
+  /**  */
+  couponId?: string;
+
+  /**  */
+  ownerUserId?: string;
+}
+
 export interface UserData {
   /**  */
   id?: string;
@@ -3297,9 +6114,71 @@ export interface VisitorFormSumbitRequest {
   shop?: VisitorShopDto;
 }
 
+export interface WechatUserinfo {
+  /**  */
+  appid?: string;
+
+  /**  */
+  openid?: string;
+
+  /**  */
+  unionid?: string;
+
+  /**  */
+  nickname?: string;
+
+  /**  */
+  headimgurl?: string;
+
+  /**  */
+  city?: string;
+
+  /**  */
+  province?: string;
+
+  /**  */
+  country?: string;
+
+  /**  */
+  sex?: number;
+
+  /**  */
+  fromClient?: ClientType;
+
+  /**  */
+  appName?: string;
+
+  /**  */
+  creationTime?: Date;
+
+  /**  */
+  creatorId?: string;
+}
+
+export interface WechatUserinfoPagedResultDto {
+  /**  */
+  totalCount?: number;
+
+  /**  */
+  items?: WechatUserinfo[];
+}
+
 export enum LocationType {
-  'baidu' = 'baidu',
-  'weixin' = 'weixin'
+  'bd09' = 'bd09',
+  'gcj02' = 'gcj02',
+  'wgs84' = 'wgs84'
+}
+
+export enum EntityChangeType {
+  'Created' = 'Created',
+  'Updated' = 'Updated',
+  'Deleted' = 'Deleted'
+}
+
+export enum UseType {
+  '全场通用' = '全场通用',
+  '指定分类' = '指定分类',
+  '指定商品' = '指定商品'
 }
 
 export enum FormTheme {
@@ -3317,9 +6196,75 @@ export enum FormItemType {
   'File' = 'File'
 }
 
+export enum PartnerState {
+  '待审核' = '待审核',
+  '驳回' = '驳回',
+  '成功' = '成功'
+}
+
+export enum PayState {
+  '取消' = '取消',
+  '未支付' = '未支付',
+  '已支付' = '已支付',
+  '待退款' = '待退款'
+}
+
+export enum OrderType {
+  'Default' = 'Default',
+  'Product' = 'Product'
+}
+
+export enum PayType {
+  '未支付' = '未支付',
+  '微信' = '微信',
+  '微信扫码' = '微信扫码',
+  '支付宝' = '支付宝',
+  '银联' = '银联',
+  '用户余额' = '用户余额'
+}
+
+export enum OrderState {
+  '已取消' = '已取消',
+  '未完成' = '未完成',
+  '正在派送' = '正在派送',
+  '派送完成' = '派送完成',
+  '完成' = '完成',
+  '售后' = '售后',
+  '退款中' = '退款中',
+  '退款完成' = '退款完成'
+}
+
+export enum ProductOrderType {
+  '未标记' = '未标记',
+  '零售' = '零售',
+  '外送' = '外送',
+  '自提' = '自提',
+  '跑腿' = '跑腿',
+  '美团' = '美团',
+  '快递' = '快递'
+}
+
+export enum RealNameInfoType {
+  '个人' = '个人',
+  '企业' = '企业'
+}
+
+export enum RealNameInfoState {
+  '未认证' = '未认证',
+  '个人认证' = '个人认证',
+  '企业认证' = '企业认证'
+}
+
 export enum CredentialType {
   'Default' = 'Default',
   'Code' = 'Code',
   'Image' = 'Image',
   'IdCard' = 'IdCard'
+}
+
+export enum ClientType {
+  'Default' = 'Default',
+  'Mini' = 'Mini',
+  'Mp' = 'Mp',
+  'Qy' = 'Qy'
 }

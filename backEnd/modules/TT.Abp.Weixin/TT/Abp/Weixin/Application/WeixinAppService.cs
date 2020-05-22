@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
 using DotNetCore.CAP;
@@ -6,14 +7,18 @@ using IdentityModel.Client;
 using IdentityServer4.Configuration;
 using IdentityServer4.Services;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
+using TT.Abp.AppManagement.Apps;
 using TT.Abp.Weixin.Application.Dtos;
 using TT.Abp.Weixin.Domain;
 using TT.Extensions;
 using TT.HttpClient.Weixin.Helpers;
+using Volo.Abp;
 using Volo.Abp.Application.Services;
+using Volo.Abp.Guids;
 using Volo.Abp.Identity;
 using Volo.Abp.MultiTenancy;
 using Volo.Abp.Settings;
@@ -24,6 +29,7 @@ namespace TT.Abp.Weixin.Application
 {
     public class WeixinAppService : ApplicationService, IWeixinAppService
     {
+        private readonly IGuidGenerator _guidGenerator;
         private readonly IConfiguration _configuration;
         private readonly IHttpClientFactory _httpClientFactory;
         private readonly IPasswordHasher<IdentityUser> _passwordHasher;
@@ -34,11 +40,14 @@ namespace TT.Abp.Weixin.Application
         private readonly ICapPublisher _capBus;
         private readonly IUserClaimsPrincipalFactory<IdentityUser> _principalFactory;
         private readonly IdentityServerOptions _options;
+        private readonly IHttpContextAccessor _httpContextAccessor;
         private readonly ITokenService _ts;
         private readonly IUnitOfWorkManager _unitOfWorkManager;
+        private readonly IAppProvider _appProvider;
 
 
         public WeixinAppService(
+            IGuidGenerator guidGenerator,
             IConfiguration configuration,
             IHttpClientFactory httpClientFactory,
             IPasswordHasher<IdentityUser> passwordHasher,
@@ -49,11 +58,14 @@ namespace TT.Abp.Weixin.Application
             ICapPublisher capBus,
             IUserClaimsPrincipalFactory<IdentityUser> principalFactory,
             IdentityServerOptions options,
+            IHttpContextAccessor httpContextAccessor,
             ITokenService TS,
-            IUnitOfWorkManager unitOfWorkManager
+            IUnitOfWorkManager unitOfWorkManager,
+            IAppProvider appProvider
         )
         {
             ObjectMapperContext = typeof(WeixinModule);
+            _guidGenerator = guidGenerator;
             _configuration = configuration;
             _httpClientFactory = httpClientFactory;
             _passwordHasher = passwordHasher;
@@ -64,8 +76,10 @@ namespace TT.Abp.Weixin.Application
             _capBus = capBus;
             _principalFactory = principalFactory;
             _options = options;
+            _httpContextAccessor = httpContextAccessor;
             _ts = TS;
             _unitOfWorkManager = unitOfWorkManager;
+            _appProvider = appProvider;
         }
 
         public async Task<object> Code2Session(WeChatMiniProgramAuthenticateModel loginModel)
@@ -86,33 +100,30 @@ namespace TT.Abp.Weixin.Application
 
         [HttpPost]
         [UnitOfWork(IsDisabled = false)]
-        public async Task<object> MiniAuth(WeChatMiniProgramAuthenticateModel loginModel, string appid = null, string appSec = null)
+        public async Task<object> MiniAuth(WeChatMiniProgramAuthenticateModel loginModel, string appName)
         {
-            if (appid.IsNullOrEmpty())
-            {
-                appid = await _setting.GetOrNullAsync(WeixinManagementSetting.MiniAppId);
-            }
-
-            if (appSec.IsNullOrEmpty())
-            {
-                appSec = await _setting.GetOrNullAsync(WeixinManagementSetting.MiniAppSecret);
-            }
+            var app = await _appProvider.GetOrNullAsync(appName);
+            var appid = app["appid"] ?? throw new AbpException($"App:{appName} appid未设置");
+            var appSec = app["appsec"] ?? throw new AbpException($"App:{appName} appsec未设置");
 
             var session = await _weixinManager.Mini_Code2Session(loginModel.code, appid, appSec);
 
             // 解密用户信息
             var miniUserInfo =
-                await _weixinManager.Mini_GetUserInfo(appid, loginModel.encryptedData, session.session_key, loginModel.iv);
+                await _weixinManager.Mini_GetUserInfo(appid, loginModel.encryptedData, session.session_key,
+                    loginModel.iv);
+
+            miniUserInfo.AppName = appName;
 
             // 更新数据库
             await _capBus.PublishAsync("weixin.services.mini.getuserinfo", miniUserInfo);
-            var token = "";
 
             var user = await _identityUserStore.FindByLoginAsync($"unionid", miniUserInfo.unionid);
             if (user == null)
             {
-                var userId = Guid.NewGuid();
-                user = new IdentityUser(userId, miniUserInfo.unionid, $"{miniUserInfo.unionid}@somall.top", _currentTenant.Id)
+                var userId = _guidGenerator.Create();
+                user = new IdentityUser(userId, miniUserInfo.unionid, $"{miniUserInfo.unionid}@somall.top",
+                    _currentTenant.Id)
                 {
                     Name = miniUserInfo.nickName
                 };
@@ -122,8 +133,12 @@ namespace TT.Abp.Weixin.Application
                     var passHash = _passwordHasher.HashPassword(user, "1q2w3E*");
                     await _identityUserStore.CreateAsync(user);
                     await _identityUserStore.SetPasswordHashAsync(user, passHash);
-                    await _identityUserStore.AddLoginAsync(user, new UserLoginInfo($"unionid", miniUserInfo.unionid, "unionid"));
-                    await _identityUserStore.AddLoginAsync(user, new UserLoginInfo($"{appid}_openid", miniUserInfo.openid, "openid"));
+
+                    await _identityUserStore.AddLoginAsync(user,
+                        new UserLoginInfo($"unionid", miniUserInfo.unionid, "unionid"));
+
+                    await _identityUserStore.AddLoginAsync(user,
+                        new UserLoginInfo($"{appid}_openid", miniUserInfo.openid, "openid"));
 
                     await _unitOfWorkManager.Current.SaveChangesAsync();
                     await uow.CompleteAsync();
@@ -151,7 +166,13 @@ namespace TT.Abp.Weixin.Application
                         }
                     }
                 });
-            token = result.AccessToken;
+
+            var token = result.AccessToken;
+
+            if (token.IsNullOrEmptyOrWhiteSpace())
+            {
+                throw new Exception("RequestTokenAsync Error");
+            }
 
             return await Task.FromResult(new
             {
@@ -176,14 +197,17 @@ namespace TT.Abp.Weixin.Application
 
 
         [HttpGet]
-        [Authorize]
         public async Task<object> GetUnLimitQr(Guid scene, string page = null)
         {
             var shorter = scene.ToShortString();
-            return new {url = await _weixinManager.Getwxacodeunlimit(shorter, page)};
+            var url = await _weixinManager.Getwxacodeunlimit("", shorter, page);
+
+            return new {url};
         }
 
-        public async Task<object> GetPhone([FromBody] WeChatMiniProgramAuthenticateModel data)
+
+        [HttpPost]
+        public async Task<object> GetPhone(WeChatMiniProgramAuthenticateModel data)
         {
             var json = Encryption.AES_decrypt(data.encryptedData, data.session_key, data.iv);
             return await Task.FromResult(json);

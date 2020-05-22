@@ -1,19 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Security.Claims;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Hosting;
+﻿using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Logging;
 using DotNetCore.CAP;
-using IdentityServer4.Models;
-using IdentityServer4.Validation;
+using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Logging;
-using StackExchange.Redis;
-using TT.HttpClient.Weixin;
+using TT.Abp.Mall.Liseners;
+using TT.RabbitMQ;
 
 namespace TT.SoMall
 {
@@ -22,13 +14,6 @@ namespace TT.SoMall
         public void ConfigureServices(IServiceCollection services)
         {
             var configuration = services.GetConfiguration();
-            services.Configure<RedisOptions>(configuration.GetSection("Redis"));
-            services.AddSingleton<IRedisClient, RedisClient>();
-            
-            // ABP
-            services.AddApplication<SoMallHttpApiHostModule>();
-            // ABP End
-
 
             services.AddCap(x =>
             {
@@ -46,16 +31,30 @@ namespace TT.SoMall
                 });
             });
 
-            services.AddControllers();
+            services.AddSignalR();
+
+            services.Configure<RabbitMqOptions>(configuration.GetSection("RabbitMQ"));
+            services.AddSingleton<RabbitMqPublisher>();
+            services.AddHostedService<PayOrderLisener>();
+            // ABP
+            services.AddApplication<SoMallHttpApiHostModule>();
+            // ABP End
         }
 
         public void Configure(IApplicationBuilder app)
         {
             IdentityModelEventSource.ShowPII = true;
 
+            app.UseForwardedHeaders(new ForwardedHeadersOptions
+            {
+                ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto
+            });
+
             app.InitializeApplication();
 
             app.UseCapDashboard();
+
+            app.UseEndpoints(endpoints => { endpoints.MapHub<GroupChatHub>("/groupchat"); });
 
             app.MapWhen(
                 ctx =>

@@ -1,0 +1,60 @@
+<nz-page-header nzTitle="订单列表">
+    <nz-breadcrumb nz-page-header-breadcrumb>
+        <nz-breadcrumb-item>
+            <a [routerLink]="['/']">{{'home' | translate}}</a>
+        </nz-breadcrumb-item>
+        <nz-breadcrumb-item>
+            <a [routerLink]="['/mall']">{{'mall' | translate}}</a>
+        </nz-breadcrumb-item>
+    </nz-breadcrumb>
+</nz-page-header>
+
+<nz-card [nzExtra]="extraAction">
+    <ng-template #extraAction>
+        <button nz-button nzSize="large" (click)="refresh()">{{'refresh' | translate}}</button>
+    </ng-template>
+    <nz-table #dataTable nzShowSizeChanger nzShowPagination [nzFrontPagination]="false" [nzData]="dataItems" [nzTotal]="pageingInfo.totalItems"
+        [(nzPageSize)]="pageingInfo.pageSize" [(nzPageIndex)]="pageingInfo.pageNumber" [nzLoading]="pageingInfo.isTableLoading" (nzPageIndexChange)="refresh()"
+        (nzPageSizeChange)="refresh()">
+        <thead>
+            <tr>
+                <th width="150px"></th>
+                <th>state</th>
+                <!-- <th>billNo</th> -->
+                <th>priceOriginal</th>
+                <th>pricePaidIn</th>
+                <th>payType</th>
+                <th>addressRealName</th>
+                <th>time</th>
+                <th>shop</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr *ngFor="let item of dataTable.data">
+                <td>
+                    <button nz-button nzType="primary" nzShape="circle" (click)="view(item)">
+                        <i nz-icon nzType="info"></i>
+                    </button>
+                    <nz-divider nzType="vertical"></nz-divider>
+                    <button nz-button nzType="default" nzShape="circle" (click)="refund(item)" *ngIf="item.pricePaidIn">
+                        <i nz-icon nzIconfont="icon-tuikuanshouhou"></i>
+                    </button>
+                </td>
+                <td>{{item.billNo}}<br />
+                    {{item.state}}
+                    <!-- <td>{{item.billNo}}</td> -->
+                <td>{{item.priceOriginal | currency}}</td>
+                <td>{{item.pricePaidIn | currency}}</td>
+                <td>{{item.payType}}</td>
+                <td>{{item.addressRealName}}<br />
+                    {{item.addressPhone}}<br />
+                    {{item.addressLocationAddress}}<br />
+                    {{item.addressLocationLabel}}<br />
+                    {{item.comment}}</td>
+                <td>{{item.creationTime | momentFromNow}}</td>
+                <td>{{item.shop.name}}</td>
+
+            </tr>
+        </tbody>
+    </nz-table>
+</nz-card>

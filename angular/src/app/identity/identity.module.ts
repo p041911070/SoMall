@@ -10,10 +10,14 @@ import { RolesComponent } from './roles/roles.component';
 
 //entry
 import { EditUserComponent } from './components/edit-user/edit-user.component';
+import { PermissionsManagerComponent } from './permissions-manager/permissions-manager.component';
+
+import { EditRoleComponent } from './roles/role-edit.component';
+
 
 
 const COMPONENTS = [UsersComponent, RolesComponent]
-const ENTRYCOMPONENTS = [EditUserComponent]
+const ENTRYCOMPONENTS = [EditUserComponent, PermissionsManagerComponent, EditRoleComponent]
 @NgModule({
   declarations: [...COMPONENTS, ...ENTRYCOMPONENTS],
   imports: [

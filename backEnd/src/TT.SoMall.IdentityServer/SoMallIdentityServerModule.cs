@@ -1,16 +1,13 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Security.Claims;
-using System.Threading.Tasks;
-using IdentityServer4.Models;
-using IdentityServer4.Validation;
 using Localization.Resources.AbpUi;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.DataProtection;
+using Microsoft.AspNetCore.Localization;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Newtonsoft.Json;
@@ -18,6 +15,8 @@ using TT.SoMall.EntityFrameworkCore;
 using TT.SoMall.Localization;
 using TT.SoMall.MultiTenancy;
 using StackExchange.Redis;
+using TT.Abp.Core;
+using TT.SoMall.Menus;
 using Volo.Abp;
 using Volo.Abp.Account;
 using Volo.Abp.Account.Web;
@@ -32,8 +31,10 @@ using Volo.Abp.BackgroundJobs;
 using Volo.Abp.Caching;
 using Volo.Abp.Localization;
 using Volo.Abp.Modularity;
+using Volo.Abp.MultiTenancy;
 using Volo.Abp.UI.Navigation.Urls;
 using Volo.Abp.UI;
+using Volo.Abp.UI.Navigation;
 using Volo.Abp.VirtualFileSystem;
 
 namespace TT.SoMall
@@ -44,7 +45,8 @@ namespace TT.SoMall
         typeof(AbpAccountApplicationModule),
         typeof(AbpAspNetCoreMvcUiBasicThemeModule),
         typeof(SoMallEntityFrameworkCoreDbMigrationsModule),
-        typeof(AbpAspNetCoreSerilogModule)
+        typeof(AbpAspNetCoreSerilogModule),
+        typeof(TtCoreModule)
     )]
     public class SoMallIdentityServerModule : AbpModule
     {
@@ -63,10 +65,7 @@ namespace TT.SoMall
                         typeof(AbpUiResource)
                     );
 
-                options.Languages.Add(new LanguageInfo("cs", "cs", "Čeština"));
                 options.Languages.Add(new LanguageInfo("en", "en", "English"));
-                options.Languages.Add(new LanguageInfo("pt-BR", "pt-BR", "Português"));
-                options.Languages.Add(new LanguageInfo("tr", "tr", "Türkçe"));
                 options.Languages.Add(new LanguageInfo("zh-Hans", "zh-Hans", "简体中文"));
                 options.Languages.Add(new LanguageInfo("zh-Hant", "zh-Hant", "繁體中文"));
             });
@@ -94,7 +93,6 @@ namespace TT.SoMall
 
             context.Services.AddStackExchangeRedisCache(options => { options.Configuration = configuration["Redis:ConnectionString"]; });
 
-
             context.Services.AddCors(options =>
             {
                 options.AddPolicy(DefaultCorsPolicyName, builder =>
@@ -114,9 +112,9 @@ namespace TT.SoMall
                 });
             });
 
+            Configure<AbpMultiTenancyOptions>(options => { options.IsEnabled = MultiTenancyConsts.IsEnabled; });
 
-            // var build = context.Services.GetObject<IIdentityServerBuilder>();
-            // build.AddExtensionGrantValidator<MiniGrant>();
+            ConfigureNavigationServices(configuration);
         }
 
         public override void OnApplicationInitialization(ApplicationInitializationContext context)
@@ -135,7 +133,9 @@ namespace TT.SoMall
 
             app.UseIdentityServer();
             app.UseAuthorization();
-            app.UseAbpRequestLocalization();
+
+            app.UseAbpRequestLocalization(option => { option.DefaultRequestCulture = new RequestCulture("zh-Hans"); });
+
             app.UseAuditing();
             app.UseAbpSerilogEnrichers();
             app.UseMvcWithDefaultRouteAndArea();
@@ -144,43 +144,20 @@ namespace TT.SoMall
 
         public override void PreConfigureServices(ServiceConfigurationContext context)
         {
+            // 自定义GrantValidator
             context.Services.PreConfigure<IIdentityServerBuilder>(
-                builder => { builder.AddExtensionGrantValidator<SmsGrantValidator>(); }
+                builder => { builder.AddExtensionGrantValidator<UserWithTenantGrantValidator>(); }
             );
         }
-    }
 
-    public static class ExtensionGrantTypes
-    {
-        public const string UserWithTenantGrantType = "UserWithTenant";
-    }
 
-    public class SmsGrantValidator : IExtensionGrantValidator
-    {
-        public string GrantType => ExtensionGrantTypes.UserWithTenantGrantType;
-
-        public async Task ValidateAsync(ExtensionGrantValidationContext context)
+        private void ConfigureNavigationServices(IConfiguration configuration)
         {
-            var userid = context.Request.Raw.Get("user_id");
-            var tenantid = context.Request.Raw.Get("tenantid");
-
-            if (string.IsNullOrEmpty(userid))
+            Configure<AbpNavigationOptions>(options =>
             {
-                context.Result = new GrantValidationResult(TokenRequestErrors.InvalidGrant);
-            }
-
-            var claimList = new List<Claim> {new Claim("tenantid", tenantid)};
-
-            context.Result = new GrantValidationResult(
-                subject: userid,
-                authenticationMethod: ExtensionGrantTypes.UserWithTenantGrantType,
-                claims: claimList
-            );
-            
-            //下一步还会在 AbpProfileService中赋值tenantId后调用
-            //usermananger.finduser验证调用实际数据库 IsActiveAsync
-
-            await Task.CompletedTask;
+                options.MenuContributors.Clear();
+                options.MenuContributors.Add(new SoMallMenuContributor(configuration));
+            });
         }
     }
 }

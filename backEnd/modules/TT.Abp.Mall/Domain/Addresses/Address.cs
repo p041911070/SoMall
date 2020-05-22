@@ -10,20 +10,19 @@ namespace TT.Abp.Mall.Domain.Addresses
     {
         protected Address()
         {
-            
         }
-        
-        public Address([NotNull] string realName, [NotNull] string phone, [NotNull] string locationLable, [NotNull] string locationAddress)
+
+        public Address([NotNull] string realName, [NotNull] string phone, [NotNull] string locationLabel, [NotNull] string locationAddress)
         {
             RealName = realName;
             Phone = phone;
-            LocationLable = locationLable;
+            LocationLabel = locationLabel;
             LocationAddress = locationAddress;
         }
 
         [NotNull] public string RealName { get; protected set; }
         [NotNull] public string Phone { get; protected set; }
-        [NotNull] public string LocationLable { get; protected set; }
+        [NotNull] public string LocationLabel { get; protected set; }
         [NotNull] public string LocationAddress { get; protected set; }
 
         public string NickName { get; set; }
@@ -38,7 +37,7 @@ namespace TT.Abp.Mall.Domain.Addresses
 
         public double? Lng { get; set; }
 
-        public LocationType LocationType { get; set; }
+        public MallEnums.LocationType LocationType { get; set; }
 
         public Guid? TenantId { get; protected set; }
     }

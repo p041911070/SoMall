@@ -1,4 +1,8 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using TT.Abp.AccountManagement.EntityFrameworkCore;
+using TT.Abp.AppManagement.EntityFrameworkCore;
+using TT.Abp.AuditManagement.EntityFrameworkCore;
+using TT.Abp.Cms.EntityFrameworkCore;
 using TT.Abp.Mall.EntityFrameworkCore;
 using TT.Abp.Shops.EntityFrameworkCore;
 using TT.Abp.VisitorManagement.EntityFrameworkCore;
@@ -51,6 +55,8 @@ namespace TT.SoMall.EntityFrameworkCore
 
             builder.ConfigureSoMall();
 
+            builder.ConfigureAccountManagement();
+
             // 店铺功能模块
             builder.ConfigureShop();
 
@@ -60,6 +66,12 @@ namespace TT.SoMall.EntityFrameworkCore
             builder.ConfigureVisitorManagement();
             // // 微信模块
             builder.ConfigureWeixinManagement();
+
+            builder.ConfigureAppManagement();
+            
+            builder.ConfigureAuditManagement();
+            
+            builder.ConfigureCms();
         }
     }
 }

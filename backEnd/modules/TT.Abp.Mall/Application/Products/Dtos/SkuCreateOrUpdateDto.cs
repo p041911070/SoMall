@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using TT.Abp.Mall.Definitions;
 using TT.Abp.Mall.Domain.Products;
 
 namespace TT.Abp.Mall.Application.Products.Dtos
@@ -55,5 +56,10 @@ namespace TT.Abp.Mall.Application.Products.Dtos
         public int? LimitBuyCount { get; set; }
         
         public string Unit { get; set; }
+        
+        public bool CommissionEnable { get; set; }
+        
+        public decimal? CommissionPrice { get; set; }
+
     }
 }

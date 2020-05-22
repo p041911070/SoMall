@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using JetBrains.Annotations;
+using TT.Abp.Mall.Application.Shops;
 using TT.Abp.Mall.Domain.Products;
 using TT.Abp.Mall.Domain.Shops;
 using TT.Abp.Shops;
@@ -11,6 +12,7 @@ namespace TT.Abp.Mall.Application.Products.Dtos
 {
     public class ProductSpuDtoBase : ISpuData
     {
+        public Guid Id { get; set; }
         public string Name { get; set; }
         public string Code { get; set; }
         public DateTimeOffset? DateTimeStart { get; set; }
@@ -18,6 +20,7 @@ namespace TT.Abp.Mall.Application.Products.Dtos
         public int? StockCount { get; set; }
         public int SoldCount { get; set; }
         public int? LimitBuyCount { get; set; }
+        public List<ProductSkuDto> Skus { get; set; }
     }
 
     /// <summary>
@@ -27,7 +30,9 @@ namespace TT.Abp.Mall.Application.Products.Dtos
     {
         public ProductCategoryDto Category { get; set; }
 
-        [CanBeNull] public MallShop Shop { get; set; }
+        public MallShopDto Shop { get; set; }
+
+        public Guid? ShopId { get; set; }
 
         public List<ProductSkuDto> Skus { get; set; }
 
@@ -69,5 +74,7 @@ namespace TT.Abp.Mall.Application.Products.Dtos
         /// 限购
         /// </summary>
         public int? LimitBuyCount { get; set; }
+
+        public List<AppProductSpuDto> AppProductSpus { get; set; }
     }
 }

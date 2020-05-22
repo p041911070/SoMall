@@ -1,7 +1,11 @@
 import { Component, OnInit } from '@angular/core';
 import { IdentityService } from '../store/identity.service';
 import { NzModalService } from 'ng-zorro-antd';
-import { EditUserComponent } from '../components/edit-user/edit-user.component';
+import { Identity } from '../models/identity';
+import { switchMap, pluck, take, mergeMap } from 'rxjs/operators';
+import { IdentityQuery } from '../store/identity.query';
+import { Observable } from 'rxjs';
+import { PermissionsService } from '../store/permissions.service';
 
 @Component({
   selector: 'app-users',
@@ -9,15 +13,22 @@ import { EditUserComponent } from '../components/edit-user/edit-user.component';
 })
 export class UsersComponent implements OnInit {
 
-  dataItems: any[] = [];
+  dataItems$: Observable<Identity.UserItem[]>;
+
   pageingInfo = {
     totalItems: 0,
     pageNumber: 0,
     pageSize: 0,
     isTableLoading: false
   };
+
+  selected: Identity.UserItem;
+  selectedUserRoles: Identity.RoleItem[];
+
   constructor(
     private identityService: IdentityService,
+    private permissionsService: PermissionsService,
+    private identityQuery: IdentityQuery,
     private modalService: NzModalService
   ) {
 
@@ -25,60 +36,16 @@ export class UsersComponent implements OnInit {
 
   ngOnInit() {
     this.refresh();
+    this.dataItems$ = this.identityQuery.users$;
   }
 
   refresh() {
-    this.identityService.getUsers().subscribe(res => {
-      console.log(res);
-      this.dataItems = res.items;
-    })
+    this.identityService.getUsers().subscribe();
+    this.identityService.getRoles().subscribe();
+    // this.permissionsService.getPermissions({ providerKey: "mall", providerName: "R" }).subscribe();
   }
 
-  create() {
-    const modal = this.modalService.create({
-      nzTitle: 'Modal Title',
-      nzContent: EditUserComponent,
-      nzComponentParams: {
-        title: 'title in component',
-        subtitle: 'component sub title，will be changed after 2 sec'
-      },
-      nzFooter: [
-        {
-          label: '确定',
-          onClick: componentInstance => {
-            console.log("componentInstance",componentInstance);
-            
-            componentInstance!.title = 'title in inner component is changed';
-          }
-        }
-      ]
-    });
-
-    modal.afterOpen.subscribe(() => console.log('[afterOpen] emitted!'));
-
-    // Return a result when closed
-    modal.afterClose.subscribe(result => console.log('[afterClose] The result is:', result));
-  }
-  edit() { }
   delete() { }
-  // protected delete(item: UserDto): void {
-  //   this.userService.delete(item.id).subscribe(() => {
-  //     this.notifyService.success(
-  //       this.i18NService.localize('SuccessfullyDeleted'),
-  //     );
-  //     this.refresh();
-  //   });
-  // }
-
-  // create(): void {
-  //   this.modalHelper
-  //     .open(CreateUserComponent, undefined, 'md', { nzMaskClosable: false })
-  //     .subscribe(result => {
-  //       if (result) {
-  //         this.refresh();
-  //       }
-  //     });
-  // }
 
   // edit(item: UserDto): void {
   //   this.modalHelper
@@ -90,5 +57,18 @@ export class UsersComponent implements OnInit {
   //     });
   // }
 
-
+  edit(id: string) {
+    this.identityService.getUserById(id)
+      .pipe(
+        mergeMap(() => this.identityService.GetUserRoles(id)),
+        // pluck('IdentityState'),
+        // take(1)
+      )
+      .subscribe((state: any) => {
+        console.log(state)
+        this.selected = state.selectedUser;
+        this.selectedUserRoles = state.selectedUserRoles || [];
+        //this.openModal();
+      });
+  }
 }

@@ -9,6 +9,12 @@
     </nz-breadcrumb>
 </nz-page-header>
 
+<div class="apps">
+    <nz-checkbox-group [(ngModel)]="apps" name="apps" (ngModelChange)="updateSingleChecked($event)">
+
+    </nz-checkbox-group>
+</div>
+
 <div class="d-flex justify-content-end">
     <button nz-button nzSize="large" (click)="addSku()" class="mr-4">{{ "mall.sku.add" | translate}}</button>
     <button nz-button nzSize="large" nzType="primary" (click)="onSubmit()">{{ "submit" | translate}}</button>
@@ -19,6 +25,14 @@
             <ng-template tabHeading>
                 <i class="fas fa-info-circle mr-1"></i> 产品基础属性
             </ng-template>
+            <nz-form-item>
+                <nz-form-label [nzSpan]="3" nzFor="shopId" nzRequired>商户</nz-form-label>
+                <nz-form-control>
+                    <nz-select formControlName="shopId" nzPlaceHolder="请选择商户" name="shopId">
+                        <nz-option *ngFor="let option of shopList" [nzValue]="option.value" [nzLabel]="option.label"></nz-option>
+                    </nz-select>
+                </nz-form-control>
+            </nz-form-item>
             <nz-form-item>
                 <nz-form-label [nzSpan]="3" nzFor="categoryId" nzRequired>商品分类</nz-form-label>
                 <nz-form-control>
@@ -69,7 +83,7 @@
             <div [formGroupName]="idx">
 
                 <div>{{sku.coverImageUrls | json}}</div>
-                <tt-upload class="coverImage" formControlName="coverImageUrls" [length]="3"></tt-upload>
+                <tt-upload class="coverImage" formControlName="coverImageUrls" [length]="3" customSuffix=""></tt-upload>
                 <div nz-row>
                     <nz-form-item nz-col [nzSpan]="12">
                         <nz-form-label nzFor="name" nzRequired>SKU名称</nz-form-label>
@@ -133,13 +147,27 @@
                     <nz-form-item nz-col [nzSpan]="8">
                         <nz-form-label [nzSpan]="4" nzFor="dateTimeStart">开售时间</nz-form-label>
                         <nz-form-control [nzSpan]="18">
-                            <nz-date-picker nzSize="large" nzShowTime nzFormat="yyyy-MM-dd HH:mm:ss" formControlName="dateTimeStart"></nz-date-picker>
+                            <nz-date-picker nzSize="large" nzShowTime formControlName="dateTimeStart"></nz-date-picker>
                         </nz-form-control>
                     </nz-form-item>
                     <nz-form-item nz-col [nzSpan]="8">
                         <nz-form-label [nzSpan]="4" nzFor="dateTimeEnd">结束时间</nz-form-label>
                         <nz-form-control [nzSpan]="18">
-                            <nz-date-picker nzSize="large" nzShowTime nzFormat="yyyy-MM-dd HH:mm:ss" formControlName="dateTimeEnd"></nz-date-picker>
+                            <nz-date-picker nzSize="large" nzShowTime formControlName="dateTimeEnd"></nz-date-picker>
+                        </nz-form-control>
+                    </nz-form-item>
+                </div>
+                <div nz-row>
+                    <nz-form-item nz-col [nzSpan]="12">
+                        <nz-form-label [nzSpan]="6" nzFor="commissionPrice" nzRequired>佣金</nz-form-label>
+                        <nz-form-control [nzSpan]="18">
+                            <input nz-input type="number" formControlName="commissionPrice" />
+                        </nz-form-control>
+                    </nz-form-item>
+                    <nz-form-item nz-col [nzSpan]="12">
+                        <nz-form-label [nzSpan]="6" nzFor="commissionEnable">开启佣金</nz-form-label>
+                        <nz-form-control [nzSpan]="18">
+                            <nz-switch formControlName="commissionEnable"></nz-switch>
                         </nz-form-control>
                     </nz-form-item>
                 </div>

@@ -22,6 +22,7 @@ const request = (
         header: {
             "content-type": "application/json",
             "Authorization": `Bearer ${uni.getStorageSync("token") || ''}`,
+            "AppName": "woju_mini"
         }
     });
 };
@@ -29,26 +30,48 @@ const request = (
 export default {
     // default
     init: (data: any) => request('POST', `/api/mall/client/init`, data),
-    checkLogin: () => request("GET", `/api/app/weixin/checkLogin?dbCheck=true`),
-    getPhone: (data: any) => request("POST", `/api/app/weixin/getPhone`,data),
+    getQrDetail: (id: string) => request("GET", `/api/mall/client/getQrDetail?id=${id}`), //this id is shortGuid
+    checkLogin: () => request("GET", `/api/app/public/GetCurrentUser`),
+    getPhone: (data: any) => request("POST", `/api/app/weixin/getPhone`, data),
+
+    public_updateUserProfile: (data: any) => request('POST', `/api/app/public/updateUserProfile`, data),
 
     // auth
     client_miniAuth: (data: any) => request("POST", `/api/mall/client/miniAuth`, data),
 
-    //user 
+    // user 
     client_getUserAddressList: () => request("GET", `/api/mall/client/getUserAddressList`),
 
-    //shop
+    // shop
     shop_get: (id: string) => request("GET", `/api/mall/mallShop/get`, { id: id }),
 
-    //mallspu
+    // mallspu
     spu_getList: (data: any) => request("GET", `/api/mall/productSpu/getList`, data),
     spu_get: (data: any) => request("GET", `/api/mall/productSpu/get`, data),
 
 
-    //address
+    // address
     address_delete: (data: any) => request("DELETE", `/api/mall/address/delete?id=${data.id}`),
     address_create: (data: any) => request("POST", `/api/mall/address/create`, data),
     address_update: (data: any) => request("PUT", `/api/mall/address/update?id=${data.id}`, data),
-    address_setDefault: (data: any) => request("POST", `/api/mall/address/setDefault`, data)
+    address_setDefault: (data: any) => request("POST", `/api/mall/address/setDefault`, data),
+
+
+    // order
+    order_get: (id: string) => request("GET", `/api/mall/productOrder/get`, { id: id }),
+    order_getList: (data: any) => request("GET", `/api/mall/productOrder/getPublicList`, data),
+
+    // pay
+    client_sumbitOrder: (data: any) => request("POST", `/api/mall/client/sumbitOrder`, data),
+
+    tenpay: (data: any) => request('POST', '/api/mall/productOrder/pay', data),
+
+    swiper_getList: (data: any) => request("GET", `/api/mall/swiper/getPublishList`, data),
+
+    // partner
+
+    partner_publicEdit: (data: any) => request("POST", `/api/mall/partner/publicEdit`, data),
+    partner_getCurrent: () => request("GET", `/api/mall/partner/getCurrent`),
+
+
 };

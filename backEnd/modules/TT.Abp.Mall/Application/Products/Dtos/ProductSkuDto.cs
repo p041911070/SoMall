@@ -32,8 +32,12 @@ namespace TT.Abp.Mall.Application.Products.Dtos
         #region ISkuData
 
         public Guid SpuId { get; set; }
+
+
         public string Name { get; set; }
+
         public string Code { get; set; }
+
         public decimal Price { get; set; }
 
         /// <summary>
@@ -93,6 +97,15 @@ namespace TT.Abp.Mall.Application.Products.Dtos
 
         #endregion
 
+
+        // just for client
+        public virtual double Num { get; set; }
+        public virtual string Comment { get; set; }
+
+        // from mapper
+        public Guid? ShopId { get; set; }
+        public string SpuName { get; set; }
+        
         public ProductSpuDto Spu { get; set; }
     }
 }

@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
+using TT.Abp.Mall.Events.Products;
 using TT.Abp.Shops;
 using Volo.Abp.Domain.Entities.Auditing;
+using Volo.Abp.Guids;
 using Volo.Abp.MultiTenancy;
 
 namespace TT.Abp.Mall.Domain.Products
@@ -41,16 +43,28 @@ namespace TT.Abp.Mall.Domain.Products
         public virtual DateTimeOffset? DateTimeStart { get; set; }
         public virtual DateTimeOffset? DateTimeEnd { get; set; }
         public virtual int? StockCount { get; protected set; }
+
         public virtual int SoldCount { get; protected set; }
+
         public virtual int? LimitBuyCount { get; protected set; }
-
         public virtual string Unit { get; set; }
-
         public virtual Guid? TenantId { get; protected set; }
-
         public virtual Guid? ShopId { get; protected set; }
 
+        #region 佣金字段
+        public virtual decimal? CommissionPrice { get; protected set; }
+        public virtual bool CommissionEnable { get; protected set; }
+
         #endregion
+
+        #endregion
+
+        public void SetAndEnableCommission(decimal price)
+        {
+            CommissionEnable = true;
+            CommissionPrice = price;
+            AddLocalEvent(new CommissionChangeEvent(this));
+        }
 
         public bool CanBuy()
         {
@@ -80,9 +94,14 @@ namespace TT.Abp.Mall.Domain.Products
         }
 
 
-        public void NewId()
+        public void SetTenant(Guid? tenantId)
         {
-            Id = Guid.NewGuid();
+            TenantId = tenantId;
+        }
+
+        public void NewId(IGuidGenerator guidGenerator)
+        {
+            Id = guidGenerator.Create();
         }
 
         [ForeignKey("SpuId")] public virtual ProductSpu Spu { get; set; }

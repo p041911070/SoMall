@@ -12,7 +12,7 @@ export function getClientSettings(): UserManagerSettings {
         client_id: 'SoMall_App',
         userStore: new WebStorageStateStore({ store: window.localStorage }),
         redirect_uri: window.location.origin + environment.SERVER_URL + '/callback.html',
-        post_logout_redirect_uri: window.location.origin + environment.SERVER_URL + '/signout-callback.html',
+        //post_logout_redirect_uri: window.location.origin + environment.SERVER_URL + '/signout-callback.html',
         response_type: 'id_token token',
         scope: "address email openid phone profile role SoMall",
         accessTokenExpiringNotificationTime: 20,
@@ -62,8 +62,8 @@ export class AuthService {
             removeStore("auth");
             this.authStore.update({ auth: undefined })
             this.userLoaded$.next(false);
-        });
-
+        })
+        
         this.manager.events.addUserLoaded(user => {
             console.log("user loaed:", user);
             this.currentUser = user;
@@ -79,7 +79,6 @@ export class AuthService {
             this.authStore.update({ auth: undefined })
             this.userLoaded$.next(false);
         })
-
     }
     isLoggedIn(): boolean {
         console.log("isLoggedIn:", this.user != null && !this.user.expired);
