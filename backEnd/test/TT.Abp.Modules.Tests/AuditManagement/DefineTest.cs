@@ -27,14 +27,14 @@ namespace TT.Abp.Modules.Tests.AuditManagement
             _auditProvider = GetRequiredService<IAuditProvider>();
             _appService = GetRequiredService<IAuditManagementAppService>();
         }
-        
+
         [Fact]
         public async Task DefinitionTest()
         {
             var audits = _auditDefinitionManager.GetAll();
 
             // define in mall Module
-            audits.Count.ShouldBe(2);
+            audits.Count.ShouldBe(3);
 
             await Task.CompletedTask;
         }
@@ -45,7 +45,7 @@ namespace TT.Abp.Modules.Tests.AuditManagement
             var providers = _auditValueProvider.Providers;
 
             // define in mall Module
-            providers.Count.ShouldBe(3);
+            providers.Count.ShouldBe(4);
 
             await Task.CompletedTask;
         }
@@ -60,8 +60,17 @@ namespace TT.Abp.Modules.Tests.AuditManagement
                 var dbEntity = await _auditFlowRepository.InsertAsync(
                     new AuditFlow(
                         MallManagementAudit.ProductRefund,
-                        true, 
+                        true,
                         "G",
+                        null),
+                    true);
+
+
+                var T_Entity = await _auditFlowRepository.InsertAsync(
+                    new AuditFlow(
+                        MallManagementAudit.ProductRefund,
+                        true,
+                        "T",
                         null),
                     true);
 
@@ -74,7 +83,7 @@ namespace TT.Abp.Modules.Tests.AuditManagement
                 dbEntity.AuditName.ShouldBe(MallManagementAudit.ProductRefund);
 
                 result.ShouldNotBeNull();
-                result.ShouldBe(dbEntity.Id);
+                result.ShouldBe(T_Entity.Id);
             });
 
             await Task.CompletedTask;

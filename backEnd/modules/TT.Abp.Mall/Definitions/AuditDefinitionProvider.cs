@@ -14,7 +14,7 @@ namespace TT.Abp.Mall.Definitions
             );
 
             context.Add(
-                new AuditDefinition(MallManagementAudit.ProductRefund, L("Audit_Partner_Agree")).WithProviders("G", "S", "T")
+                new AuditDefinition(MallManagementAudit.PartnerAgree, L("Audit_Partner_Agree")).WithProviders("G", "S", "T")
             );
         }
 
@@ -28,6 +28,6 @@ namespace TT.Abp.Mall.Definitions
     {
         private const string GroupName = "Mall_";
         public const string ProductRefund = GroupName + "Product_Refund";
-        public const string PartnerAgree = GroupName + "Product_Agree";
+        public const string PartnerAgree = GroupName + "Partner_Agree";
     }
 }
